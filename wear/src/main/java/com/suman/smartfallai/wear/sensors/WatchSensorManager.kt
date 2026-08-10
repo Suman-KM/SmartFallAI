@@ -1,0 +1,158 @@
+package com.suman.smartfallai.wear.sensors
+
+import android.content.Context
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
+import com.suman.smartfallai.wear.model.SensorData
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+
+class WatchSensorManager(
+    context: Context
+) : SensorEventListener {
+
+    private val sensorManager =
+        context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+
+    private val accelerometer =
+        sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+
+    private val gyroscope =
+        sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
+
+    private val rotationVector =
+        sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
+
+    private var accX = 0f
+    private var accY = 0f
+    private var accZ = 0f
+
+    private var gyroX = 0f
+    private var gyroY = 0f
+    private var gyroZ = 0f
+
+    private var pitch = 0f
+    private var roll = 0f
+    private var yaw = 0f
+
+    private val _sensorData =
+        MutableStateFlow(SensorData())
+
+    val sensorData: StateFlow<SensorData> =
+        _sensorData.asStateFlow()
+
+    fun start() {
+
+        accelerometer?.let {
+            sensorManager.registerListener(
+                this,
+                it,
+                SensorManager.SENSOR_DELAY_GAME
+            )
+        }
+
+        gyroscope?.let {
+            sensorManager.registerListener(
+                this,
+                it,
+                SensorManager.SENSOR_DELAY_GAME
+            )
+        }
+
+        rotationVector?.let {
+            sensorManager.registerListener(
+                this,
+                it,
+                SensorManager.SENSOR_DELAY_GAME
+            )
+        }
+    }
+
+    fun stop() {
+        sensorManager.unregisterListener(this)
+    }
+
+    override fun onSensorChanged(event: SensorEvent) {
+
+        when (event.sensor.type) {
+
+            Sensor.TYPE_ACCELEROMETER -> {
+                accX = event.values[0]
+                accY = event.values[1]
+                accZ = event.values[2]
+            }
+
+            Sensor.TYPE_GYROSCOPE -> {
+                gyroX = event.values[0]
+                gyroY = event.values[1]
+                gyroZ = event.values[2]
+            }
+
+            Sensor.TYPE_ROTATION_VECTOR -> {
+                updateOrientation(event)
+            }
+        }
+
+        publishSensorData()
+    }
+
+    private fun updateOrientation(event: SensorEvent) {
+
+        val rotationMatrix = FloatArray(9)
+
+        SensorManager.getRotationMatrixFromVector(
+            rotationMatrix,
+            event.values
+        )
+
+        val orientation = FloatArray(3)
+
+        SensorManager.getOrientation(
+            rotationMatrix,
+            orientation
+        )
+
+        yaw = Math.toDegrees(
+            orientation[0].toDouble()
+        ).toFloat()
+
+        pitch = Math.toDegrees(
+            orientation[1].toDouble()
+        ).toFloat()
+
+        roll = Math.toDegrees(
+            orientation[2].toDouble()
+        ).toFloat()
+    }
+
+    private fun publishSensorData() {
+
+        _sensorData.value = SensorData(
+
+            timestamp = System.currentTimeMillis(),
+
+            accX = accX,
+            accY = accY,
+            accZ = accZ,
+
+            gyroX = gyroX,
+            gyroY = gyroY,
+            gyroZ = gyroZ,
+
+            pitch = pitch,
+            roll = roll,
+            yaw = yaw,
+
+            isValid = true
+        )
+    }
+
+    override fun onAccuracyChanged(
+        sensor: Sensor?,
+        accuracy: Int
+    ) {
+    }
+}

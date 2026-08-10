@@ -24,4 +24,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "MobileSensorLogger"
 include(":app")
- 
+include(":wear")
