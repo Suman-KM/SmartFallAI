@@ -13,3 +13,8 @@
 .externalNativeBuild
 .cxx
 local.properties
+server/.env
+server/.venv/
+server/storage/
+__pycache__/
+*.py[cod]
