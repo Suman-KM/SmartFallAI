@@ -1,6 +1,9 @@
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
+
+ALLOWED_FILE_STATUSES = {"uploaded", "verified", "archived"}
 
 
 class FileResponse(BaseModel):
@@ -22,6 +25,24 @@ class FileResponse(BaseModel):
 class FileUploadResponse(BaseModel):
     file: FileResponse
     duplicate: bool
+
+
+class FileStatusUpdateRequest(BaseModel):
+    status: str = Field(min_length=1, max_length=64)
+
+
+class CheckFileRequest(BaseModel):
+    filename: str = Field(min_length=1, max_length=255)
+    media_type: str = Field(min_length=1, max_length=64)
+    size: int = Field(ge=0)
+    sha256: str = Field(min_length=64, max_length=64, pattern=r"^[A-Fa-f0-9]{64}$")
+    session_id: str | None = Field(default=None, max_length=36)
+
+
+class CheckFileResponse(BaseModel):
+    exists: bool
+    duplicate: bool
+    file: FileResponse | None = None
 
 
 class ManifestEntry(BaseModel):

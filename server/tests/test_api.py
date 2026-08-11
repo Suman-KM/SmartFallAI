@@ -5,8 +5,9 @@ from datetime import datetime, timezone
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
+from app.config import get_settings
 from app.database import get_db
-from app.models import Device
+from app.models import Device, FileRecord
 
 
 def auth_header(token: str) -> dict[str, str]:
@@ -293,3 +294,287 @@ def test_cross_device_file_download_is_rejected(client: TestClient) -> None:
 
     own_download = client.get(f"/api/v1/files/{file_id}/download", headers=auth_header(token_b))
     assert own_download.status_code == 200
+
+
+def test_file_metadata_endpoint_is_owner_only_and_metadata_only(client: TestClient) -> None:
+    _, token_a = register_device(client, "watch-a")
+    _, token_b = register_device(client, "watch-b")
+    create_session(client, token_a, "session-a")
+    upload = upload_sensor_file(client, token_a, "session-a")
+    file_id = upload["file"]["file_id"]
+
+    own_response = client.get(f"/api/v1/files/{file_id}", headers=auth_header(token_a))
+    assert own_response.status_code == 200
+    data = own_response.json()
+    assert data["file_id"] == file_id
+    assert data["relative_path"].startswith("devices/watch-a/")
+    assert not data["relative_path"].startswith("/")
+    assert "storage_root" not in data
+    assert "path" not in data
+
+    cross_response = client.get(f"/api/v1/files/{file_id}", headers=auth_header(token_b))
+    assert cross_response.status_code == 404
+
+
+def test_device_file_listing_filters_and_pagination(client: TestClient) -> None:
+    device_id, token = register_device(client, "watch-filter")
+    create_session(client, token, "session-a")
+    create_session(client, token, "session-b")
+    first = upload_sensor_file(client, token, "session-a", b"timestamp,accX\n1,1\n")
+    second = upload_sensor_file(client, token, "session-b", b"timestamp,accX\n2,2\n")
+    photo_response = client.post(
+        "/api/v1/files/upload",
+        headers=auth_header(token),
+        data={"media_type": "photos"},
+        files={"upload": ("frame.jpg", b"jpg-bytes", "image/jpeg")},
+    )
+    assert photo_response.status_code == 201
+
+    status_response = client.patch(
+        f"/api/v1/files/{second['file']['file_id']}/status",
+        headers=auth_header(token),
+        json={"status": "verified"},
+    )
+    assert status_response.status_code == 200
+
+    sensor_files = client.get(
+        f"/api/v1/devices/{device_id}/files?media_type=sensor",
+        headers=auth_header(token),
+    )
+    assert sensor_files.status_code == 200
+    assert {file["file_id"] for file in sensor_files.json()} == {
+        first["file"]["file_id"],
+        second["file"]["file_id"],
+    }
+
+    session_files = client.get(
+        f"/api/v1/devices/{device_id}/files?session_id=session-a",
+        headers=auth_header(token),
+    )
+    assert session_files.status_code == 200
+    assert [file["file_id"] for file in session_files.json()] == [first["file"]["file_id"]]
+
+    verified_files = client.get(
+        f"/api/v1/devices/{device_id}/files?status=verified",
+        headers=auth_header(token),
+    )
+    assert verified_files.status_code == 200
+    assert [file["file_id"] for file in verified_files.json()] == [second["file"]["file_id"]]
+
+    first_page = client.get(
+        f"/api/v1/devices/{device_id}/files?limit=1&offset=0",
+        headers=auth_header(token),
+    )
+    second_page = client.get(
+        f"/api/v1/devices/{device_id}/files?limit=1&offset=1",
+        headers=auth_header(token),
+    )
+    assert first_page.status_code == 200
+    assert second_page.status_code == 200
+    assert len(first_page.json()) == 1
+    assert len(second_page.json()) == 1
+    assert first_page.json()[0]["file_id"] != second_page.json()[0]["file_id"]
+
+
+def test_manifest_filters(client: TestClient) -> None:
+    device_id, token = register_device(client, "watch-manifest")
+    create_session(client, token, "session-a")
+    create_session(client, token, "session-b")
+    sensor_a = upload_sensor_file(client, token, "session-a", b"timestamp,accX\n1,1\n")
+    sensor_b = upload_sensor_file(client, token, "session-b", b"timestamp,accX\n2,2\n")
+    photo = client.post(
+        "/api/v1/files/upload",
+        headers=auth_header(token),
+        data={"media_type": "photos"},
+        files={"upload": ("photo.jpg", b"photo", "image/jpeg")},
+    )
+    assert photo.status_code == 201
+    archive = client.patch(
+        f"/api/v1/files/{sensor_b['file']['file_id']}/status",
+        headers=auth_header(token),
+        json={"status": "archived"},
+    )
+    assert archive.status_code == 200
+
+    sensor_manifest = client.get(
+        f"/api/v1/sync/manifest/{device_id}?media_type=sensor",
+        headers=auth_header(token),
+    )
+    assert sensor_manifest.status_code == 200
+    assert {file["file_id"] for file in sensor_manifest.json()["files"]} == {
+        sensor_a["file"]["file_id"],
+        sensor_b["file"]["file_id"],
+    }
+
+    session_manifest = client.get(
+        f"/api/v1/sync/manifest/{device_id}?session_id=session-a",
+        headers=auth_header(token),
+    )
+    assert session_manifest.status_code == 200
+    assert [file["file_id"] for file in session_manifest.json()["files"]] == [
+        sensor_a["file"]["file_id"]
+    ]
+
+    archived_manifest = client.get(
+        f"/api/v1/sync/manifest/{device_id}?status=archived",
+        headers=auth_header(token),
+    )
+    assert archived_manifest.status_code == 200
+    assert [file["file_id"] for file in archived_manifest.json()["files"]] == [
+        sensor_b["file"]["file_id"]
+    ]
+
+
+def test_check_file_preflight_is_metadata_only_and_device_scoped(client: TestClient) -> None:
+    _, token_a = register_device(client, "watch-check-a")
+    _, token_b = register_device(client, "watch-check-b")
+    create_session(client, token_a, "session-a")
+    upload = upload_sensor_file(client, token_a, "session-a", b"timestamp,accX\n1,2\n")
+    uploaded_file = upload["file"]
+
+    with next(db_session(client)) as db:
+        before_count = db.query(FileRecord).count()
+
+    exists = client.post(
+        "/api/v1/sync/check-file",
+        headers=auth_header(token_a),
+        json={
+            "filename": "session-a.csv",
+            "media_type": "sensor",
+            "size": uploaded_file["size"],
+            "sha256": uploaded_file["sha256"],
+            "session_id": "session-a",
+        },
+    )
+    assert exists.status_code == 200
+    assert exists.json()["exists"] is True
+    assert exists.json()["duplicate"] is True
+    assert exists.json()["file"]["file_id"] == uploaded_file["file_id"]
+
+    missing = client.post(
+        "/api/v1/sync/check-file",
+        headers=auth_header(token_a),
+        json={
+            "filename": "new.csv",
+            "media_type": "sensor",
+            "size": 10,
+            "sha256": "0" * 64,
+        },
+    )
+    assert missing.status_code == 200
+    assert missing.json() == {"exists": False, "duplicate": False, "file": None}
+
+    cross_session = client.post(
+        "/api/v1/sync/check-file",
+        headers=auth_header(token_b),
+        json={
+            "filename": "session-a.csv",
+            "media_type": "sensor",
+            "size": uploaded_file["size"],
+            "sha256": uploaded_file["sha256"],
+            "session_id": "session-a",
+        },
+    )
+    assert cross_session.status_code == 404
+
+    invalid_media = client.post(
+        "/api/v1/sync/check-file",
+        headers=auth_header(token_a),
+        json={
+            "filename": "bad.csv",
+            "media_type": "unsupported",
+            "size": 10,
+            "sha256": "0" * 64,
+        },
+    )
+    assert invalid_media.status_code == 400
+
+    with next(db_session(client)) as db:
+        after_count = db.query(FileRecord).count()
+    assert after_count == before_count
+
+
+def test_upload_rejects_client_checksum_and_size_mismatches(client: TestClient) -> None:
+    _, token = register_device(client, "watch-mismatch")
+    settings = client.app.dependency_overrides[get_settings]()
+
+    wrong_hash = client.post(
+        "/api/v1/files/upload",
+        headers=auth_header(token),
+        data={"media_type": "sensor", "sha256": "0" * 64},
+        files={"upload": ("bad-hash.csv", b"actual-content", "text/csv")},
+    )
+    assert wrong_hash.status_code == 400
+    assert wrong_hash.json()["detail"] == "Upload SHA-256 mismatch"
+
+    wrong_size = client.post(
+        "/api/v1/files/upload",
+        headers=auth_header(token),
+        data={"media_type": "sensor", "size": "999"},
+        files={"upload": ("bad-size.csv", b"small", "text/csv")},
+    )
+    assert wrong_size.status_code == 400
+    assert wrong_size.json()["detail"] == "Upload size mismatch"
+
+    with next(db_session(client)) as db:
+        assert db.query(FileRecord).count() == 0
+    assert not [path for path in settings.storage_root.rglob("*") if path.is_file()]
+
+
+def test_upload_accepts_matching_client_checksum_and_size(client: TestClient) -> None:
+    _, token = register_device(client, "watch-match")
+    content = b"timestamp,accX\n1,2\n"
+    response = client.post(
+        "/api/v1/files/upload",
+        headers=auth_header(token),
+        data={
+            "media_type": "sensor",
+            "sha256": hashlib.sha256(content).hexdigest(),
+            "size": str(len(content)),
+        },
+        files={"upload": ("match.csv", content, "text/csv")},
+    )
+    assert response.status_code == 201
+    assert response.json()["duplicate"] is False
+    assert response.json()["file"]["sha256"] == hashlib.sha256(content).hexdigest()
+
+
+def test_file_status_update_is_owner_only_and_restricted(client: TestClient) -> None:
+    _, token_a = register_device(client, "watch-status-a")
+    _, token_b = register_device(client, "watch-status-b")
+    create_session(client, token_a, "session-a")
+    upload = upload_sensor_file(client, token_a, "session-a")
+    file_id = upload["file"]["file_id"]
+
+    verified = client.patch(
+        f"/api/v1/files/{file_id}/status",
+        headers=auth_header(token_a),
+        json={"status": "verified"},
+    )
+    assert verified.status_code == 200
+    assert verified.json()["status"] == "verified"
+
+    archived = client.patch(
+        f"/api/v1/files/{file_id}/status",
+        headers=auth_header(token_a),
+        json={"status": "archived"},
+    )
+    assert archived.status_code == 200
+    assert archived.json()["status"] == "archived"
+
+    deleted = client.patch(
+        f"/api/v1/files/{file_id}/status",
+        headers=auth_header(token_a),
+        json={"status": "deleted"},
+    )
+    assert deleted.status_code == 400
+
+    cross_device = client.patch(
+        f"/api/v1/files/{file_id}/status",
+        headers=auth_header(token_b),
+        json={"status": "verified"},
+    )
+    assert cross_device.status_code == 404
+
+    download = client.get(f"/api/v1/files/{file_id}/download", headers=auth_header(token_a))
+    assert download.status_code == 200

@@ -85,13 +85,18 @@ Expected response:
 - `GET /health`
 - `POST /api/v1/devices/register`
 - `GET /api/v1/devices`
+- `GET /api/v1/devices/me`
+- `POST /api/v1/devices/heartbeat`
 - `POST /api/v1/sessions`
 - `GET /api/v1/sessions`
 - `GET /api/v1/sessions/{session_id}`
 - `POST /api/v1/files/upload`
-- `GET /api/v1/sync/manifest/{device_id}`
-- `GET /api/v1/devices/{device_id}/files`
+- `GET /api/v1/files/{file_id}`
+- `PATCH /api/v1/files/{file_id}/status`
 - `GET /api/v1/files/{file_id}/download`
+- `GET /api/v1/sync/manifest/{device_id}`
+- `POST /api/v1/sync/check-file`
+- `GET /api/v1/devices/{device_id}/files`
 
 Device registration returns a bearer token only when the device is first created. Store that token on the device or client. All normal device, sync, upload, and download APIs require:
 
@@ -129,15 +134,106 @@ Supported media types are:
 - `gallery`
 - `other`
 
-## Sync Protocol
+## File Synchronization API
 
-Clients should keep a local pending-upload queue. For each local file, calculate SHA-256 and compare it against:
+All file synchronization endpoints require bearer authentication. A device can only read, update, upload, download, or check files that belong to its own `device_id`. The API returns metadata paths relative to `SMARTFALLAI_STORAGE_ROOT`; it never returns absolute filesystem paths.
 
-```bash
-GET /api/v1/sync/manifest/<device_id>
+### Upload
+
+```http
+POST /api/v1/files/upload
 ```
 
-The manifest includes `file_id`, `relative_path`, `media_type`, `size`, `sha256`, `status`, and timestamps. Clients can classify local files as already uploaded, missing, changed, or duplicate before uploading. Failed uploads should stay pending locally and be retried later. The server deduplicates uploads by `device_id`, `sha256`, and `size`.
+Multipart form fields:
+
+- `upload`: required file part.
+- `media_type`: required; one of the supported media types below.
+- `session_id`: optional recording session id owned by the authenticated device.
+- `filename`: optional server filename override.
+- `sha256`: optional client-calculated SHA-256.
+- `size`: optional client-calculated byte size.
+
+The server always calculates its own SHA-256 and size. If client-provided `sha256` or `size` does not match the server calculation, the request is rejected and the staged temporary file is removed. Duplicate detection is based on `device_id`, `sha256`, and `size`. Actual file bytes are stored on disk; PostgreSQL stores metadata only.
+
+### Metadata
+
+```http
+GET /api/v1/files/{file_id}
+```
+
+Returns metadata for a single owned file. It does not download bytes and does not expose absolute filesystem paths.
+
+```http
+GET /api/v1/devices/{device_id}/files
+```
+
+Lists owned file metadata newest upload first. Query filters:
+
+- `media_type`
+- `session_id`
+- `status`
+- `limit`, default `100`, range `1..500`
+- `offset`, default `0`
+
+### Manifest
+
+```http
+GET /api/v1/sync/manifest/{device_id}
+```
+
+Returns the sync manifest for the authenticated device. Query filters:
+
+- `media_type`
+- `session_id`
+- `status`
+
+The manifest includes `file_id`, `relative_path`, `media_type`, `size`, `sha256`, `status`, and upload timestamps.
+
+### Preflight Duplicate Check
+
+```http
+POST /api/v1/sync/check-file
+```
+
+JSON body:
+
+```json
+{
+  "filename": "Walking_20260811_101500.csv",
+  "media_type": "sensor",
+  "size": 12345,
+  "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "session_id": "optional-session-id"
+}
+```
+
+The endpoint validates media type and optional session ownership, checks for an existing file by `device_id`, `sha256`, and `size`, and returns matching metadata when present. It does not create a database row and does not write a file.
+
+### Status
+
+```http
+PATCH /api/v1/files/{file_id}/status
+```
+
+Allowed statuses in Phase 2.2:
+
+- `uploaded`
+- `verified`
+- `archived`
+
+This is metadata-only. It does not delete physical files.
+
+### Download
+
+```http
+GET /api/v1/files/{file_id}/download
+```
+
+Downloads bytes for an owned file. Cross-device access returns 404.
+
+## Client Synchronization Flow
+
+Clients should keep a local pending-upload queue. For each local file, calculate byte size and SHA-256 locally, then call `POST /api/v1/sync/check-file` or fetch `GET /api/v1/sync/manifest/{device_id}` with filters. If the server already has the file, mark the local item complete. If it is missing, upload it with `POST /api/v1/files/upload` and include the client-calculated `sha256` and `size` fields. Failed uploads should remain pending locally and be retried later.
 
 ## Development Workflow
 
