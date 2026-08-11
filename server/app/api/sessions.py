@@ -33,11 +33,15 @@ def create_session(
 
 @router.get("", response_model=list[SessionResponse])
 def list_sessions(
-    _: Device = Depends(authenticate_device),
+    device: Device = Depends(authenticate_device),
     db: Session = Depends(get_db),
 ) -> list[RecordingSession]:
     return list(
-        db.scalars(select(RecordingSession).order_by(RecordingSession.started_at.desc()))
+        db.scalars(
+            select(RecordingSession)
+            .where(RecordingSession.device_id == device.device_id)
+            .order_by(RecordingSession.started_at.desc())
+        )
     )
 
 
@@ -48,6 +52,6 @@ def get_session(
     db: Session = Depends(get_db),
 ) -> RecordingSession:
     session = db.get(RecordingSession, session_id)
-    if session is None:
+    if session is None or session.device_id != device.device_id:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Session not found")
     return session

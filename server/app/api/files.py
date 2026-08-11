@@ -88,12 +88,12 @@ async def upload_file(
 @router.get("/{file_id}/download")
 def download_file(
     file_id: str,
-    _: Device = Depends(authenticate_device),
+    device: Device = Depends(authenticate_device),
     db: Session = Depends(get_db),
     settings: Settings = Depends(get_settings),
 ) -> DownloadResponse:
     record = db.get(FileRecord, file_id)
-    if record is None:
+    if record is None or record.device_id != device.device_id:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File not found")
     path = resolve_storage_path(settings, record.relative_path)
     if not path.exists():

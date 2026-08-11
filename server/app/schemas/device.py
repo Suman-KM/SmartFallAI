@@ -1,6 +1,6 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class DeviceRegisterRequest(BaseModel):
@@ -23,7 +23,22 @@ class DeviceResponse(BaseModel):
 
     model_config = {"from_attributes": True}
 
+    @field_validator("created_at", "last_seen")
+    @classmethod
+    def assume_utc_for_naive_datetimes(cls, value: datetime | None) -> datetime | None:
+        if value is not None and value.tzinfo is None:
+            return value.replace(tzinfo=timezone.utc)
+        return value
+
 
 class DeviceRegisterResponse(BaseModel):
     device: DeviceResponse
     token: str | None = None
+
+
+class DeviceHeartbeatRequest(BaseModel):
+    status: str = Field(default="active", min_length=1, max_length=64)
+
+
+class DeviceHeartbeatResponse(BaseModel):
+    device: DeviceResponse

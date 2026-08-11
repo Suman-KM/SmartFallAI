@@ -7,7 +7,13 @@ from sqlalchemy.orm import Session
 from app.config import Settings, get_settings
 from app.database import get_db
 from app.models import Device
-from app.schemas.device import DeviceRegisterRequest, DeviceRegisterResponse, DeviceResponse
+from app.schemas.device import (
+    DeviceHeartbeatRequest,
+    DeviceHeartbeatResponse,
+    DeviceRegisterRequest,
+    DeviceRegisterResponse,
+    DeviceResponse,
+)
 from app.services.auth import authenticate_device, generate_device_token, hash_token
 
 router = APIRouter(prefix="/devices", tags=["devices"])
@@ -46,6 +52,27 @@ def register_device(
     db.commit()
     db.refresh(device)
     return DeviceRegisterResponse(device=device, token=issued_token)
+
+
+@router.get("/me", response_model=DeviceResponse)
+def get_current_device(device: Device = Depends(authenticate_device)) -> Device:
+    return device
+
+
+@router.post("/heartbeat", response_model=DeviceHeartbeatResponse)
+def heartbeat(
+    payload: DeviceHeartbeatRequest | None = None,
+    device: Device = Depends(authenticate_device),
+    db: Session = Depends(get_db),
+) -> DeviceHeartbeatResponse:
+    if payload is not None:
+        device.status = payload.status
+    else:
+        device.status = "active"
+    db.add(device)
+    db.commit()
+    db.refresh(device)
+    return DeviceHeartbeatResponse(device=device)
 
 
 @router.get("", response_model=list[DeviceResponse])
