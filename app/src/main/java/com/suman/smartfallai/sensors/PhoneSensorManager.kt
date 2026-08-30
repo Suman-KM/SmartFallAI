@@ -62,7 +62,7 @@ class PhoneSensorManager(
             sensorManager.registerListener(
                 this,
                 it,
-                SensorManager.SENSOR_DELAY_GAME
+                20000
             )
 
         }
@@ -72,7 +72,7 @@ class PhoneSensorManager(
             sensorManager.registerListener(
                 this,
                 it,
-                SensorManager.SENSOR_DELAY_GAME
+                20000
             )
 
         }
@@ -82,7 +82,7 @@ class PhoneSensorManager(
             sensorManager.registerListener(
                 this,
                 it,
-                SensorManager.SENSOR_DELAY_GAME
+                20000
             )
 
         }

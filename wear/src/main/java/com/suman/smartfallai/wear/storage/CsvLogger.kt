@@ -23,7 +23,11 @@ class CsvLogger(
             Locale.getDefault()
         )
 
-    fun startLogging(activity: String): String {
+    private var currentSessionId = ""
+
+    fun startLogging(activity: String, sessionId: String): String {
+
+        currentSessionId = sessionId
 
         val folder = File(
             context.getExternalFilesDir(null),
@@ -35,7 +39,7 @@ class CsvLogger(
         }
 
         val fileName =
-            "${activity}_${dateFormat.format(Date())}.csv"
+            "${sessionId}_WATCH.csv"
 
         val file = File(
             folder,
@@ -49,7 +53,8 @@ class CsvLogger(
         )
 
         writer?.write(
-            "timestamp," +
+            "session_id," +
+                    "timestamp," +
                     "accX,accY,accZ," +
                     "gyroX,gyroY,gyroZ," +
                     "pitch,roll,yaw," +
@@ -72,6 +77,7 @@ class CsvLogger(
         writer?.apply {
 
             write(
+                "${currentSessionId}," +
                 "${data.timestamp}," +
 
                         "${data.accX}," +

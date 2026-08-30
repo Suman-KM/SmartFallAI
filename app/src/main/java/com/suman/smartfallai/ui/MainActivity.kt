@@ -37,6 +37,21 @@ class MainActivity : ComponentActivity() {
                 .recordingState
                 .collectAsStateWithLifecycle()
 
+            androidx.compose.runtime.DisposableEffect(recordingState.isRecording) {
+                val view = window.decorView
+                if (recordingState.isRecording) {
+                    window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                    view.keepScreenOn = true
+                } else {
+                    window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                    view.keepScreenOn = false
+                }
+                onDispose {
+                    window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                    view.keepScreenOn = false
+                }
+            }
+
             SmartFallScreen(
                 state = recordingState,
                 onStart = { activity ->

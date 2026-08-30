@@ -1,7 +1,6 @@
 package com.suman.smartfallai.storage
 
 import android.content.Context
-import com.suman.smartfallai.model.SensorData
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
@@ -9,7 +8,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class CsvLogger(
+class WatchCsvLogger(
     private val context: Context
 ) {
 
@@ -18,11 +17,7 @@ class CsvLogger(
     private val dateFormat =
         SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
 
-    private var currentSessionId = ""
-
     fun startLogging(activity: String, sessionId: String): String {
-
-        currentSessionId = sessionId
 
         val folder = File(
             context.getExternalFilesDir(null),
@@ -34,7 +29,7 @@ class CsvLogger(
         }
 
         val fileName =
-            "${sessionId}_MOBILE.csv"
+            "${sessionId}_WATCH.csv"
 
         val file = File(folder, fileName)
 
@@ -42,48 +37,31 @@ class CsvLogger(
 
         writer?.write(
             "session_id," +
-            "timestamp," +
+                    "timestamp," +
                     "accX,accY,accZ," +
                     "gyroX,gyroY,gyroZ," +
                     "pitch,roll,yaw," +
                     "latitude,longitude,altitude," +
                     "speed,accuracy," +
+                    "heartRate,spo2," +
+                    "pressure," +
                     "activity"
         )
 
         writer?.newLine()
+        writer?.flush()
 
         return fileName
     }
 
-    fun log(data: SensorData) {
+    fun log(payload: String) {
 
         writer?.apply {
 
-            write(
-                "${currentSessionId}," +
-                "${data.timestamp}," +
-                        "${data.accX}," +
-                        "${data.accY}," +
-                        "${data.accZ}," +
-                        "${data.gyroX}," +
-                        "${data.gyroY}," +
-                        "${data.gyroZ}," +
-                        "${data.pitch}," +
-                        "${data.roll}," +
-                        "${data.yaw}," +
-                        "${data.latitude}," +
-                        "${data.longitude}," +
-                        "${data.altitude}," +
-                        "${data.speed}," +
-                        "${data.accuracy}," +
-                        data.activity
-            )
-
+            write(payload)
             newLine()
-
+            flush()
         }
-
     }
 
     fun stopLogging() {
@@ -91,7 +69,5 @@ class CsvLogger(
         writer?.flush()
         writer?.close()
         writer = null
-
     }
-
 }

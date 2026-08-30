@@ -2,6 +2,8 @@ package com.suman.smartfallai.wear.model
 
 data class SensorData(
 
+    val sequence: Long = 0L,
+
     val timestamp: Long = System.currentTimeMillis(),
 
     val accX: Float = 0f,

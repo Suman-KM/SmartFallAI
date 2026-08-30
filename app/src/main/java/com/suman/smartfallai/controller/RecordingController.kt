@@ -1,6 +1,8 @@
 package com.suman.smartfallai.controller
 
+import com.suman.smartfallai.ActivityLabel
 import android.content.Context
+import com.suman.smartfallai.communication.WatchManager
 import com.suman.smartfallai.gps.GpsManager
 import com.suman.smartfallai.sensors.PhoneSensorManager
 import com.suman.smartfallai.storage.CsvLogger
@@ -26,6 +28,9 @@ class RecordingController(
     private val csvLogger =
         CsvLogger(context)
 
+    private val watchManager =
+        WatchManager(context)
+
     private val scope =
         CoroutineScope(Dispatchers.IO)
 
@@ -37,7 +42,7 @@ class RecordingController(
     val state: StateFlow<RecordingState> =
         _state.asStateFlow()
 
-    private var currentActivity = "Walking"
+    private var currentActivity = ActivityLabel.WALKING.name
 
     fun startRecording(activity: String) {
 
@@ -45,8 +50,14 @@ class RecordingController(
 
         currentActivity = activity
 
+        val dateFormat = java.text.SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.getDefault())
+        val shortUuid = java.util.UUID.randomUUID().toString().substring(0, 4).uppercase(java.util.Locale.getDefault())
+        val sessionId = "SESSION_${dateFormat.format(java.util.Date())}_$shortUuid"
+
         val fileName =
-            csvLogger.startLogging(activity)
+            csvLogger.startLogging(activity, sessionId)
+
+        watchManager.startRecordingSession(activity, sessionId)
 
         _state.value = _state.value.copy(
             isRecording = true,
@@ -103,6 +114,8 @@ class RecordingController(
 
         if (!_state.value.isRecording) return
 
+        val stopTimestamp = System.currentTimeMillis()
+
         recordingJob?.cancel()
 
         phoneSensorManager.stop()
@@ -110,6 +123,8 @@ class RecordingController(
         gpsManager.stop()
 
         csvLogger.stopLogging()
+
+        watchManager.stopRecordingSession(stopTimestamp)
 
         _state.value = _state.value.copy(
 

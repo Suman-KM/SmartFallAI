@@ -4,7 +4,7 @@ data class RecordingState(
 
     val isRecording: Boolean = false,
 
-    val activity: String = "Unknown",
+    val activity: String = com.suman.smartfallai.wear.ActivityLabel.WALKING.name,
 
     val sampleCount: Long = 0L,
 
@@ -12,6 +12,6 @@ data class RecordingState(
 
     val currentFile: String = "",
 
-    val status: String = "Ready"
+    val status: String = "Waiting for Phone..."
 
 )

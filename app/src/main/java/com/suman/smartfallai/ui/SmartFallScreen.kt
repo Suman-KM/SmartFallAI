@@ -8,6 +8,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.suman.smartfallai.ActivityLabel
 import com.suman.smartfallai.controller.RecordingState
 
 @Composable
@@ -21,27 +22,7 @@ fun SmartFallScreen(
 
 ) {
 
-    val activities = listOf(
-
-        "Standing",
-        "Walking",
-        "Running",
-        "Sitting",
-        "Lying Down",
-        "Standing Up",
-        "Sitting Down",
-        "Upstairs",
-        "Downstairs",
-        "Forward Fall",
-        "Backward Fall",
-        "Left Side Fall",
-        "Right Side Fall",
-        "Fall While Sitting",
-        "Fall While Walking",
-        "Slip and Fall",
-        "Trip and Fall"
-
-    )
+    val activities = ActivityLabel.entries.map { it.displayName }
 
     var expanded by remember {
 
@@ -49,107 +30,61 @@ fun SmartFallScreen(
 
     }
 
-    var selectedActivity by remember {
-
-        mutableStateOf("Walking")
-
+    var selectedActivityLabel by remember {
+        mutableStateOf(ActivityLabel.WALKING)
     }
 
     Column(
-
         modifier = Modifier
             .fillMaxSize()
             .padding(20.dp)
             .verticalScroll(rememberScrollState()),
-
         horizontalAlignment = Alignment.CenterHorizontally,
-
         verticalArrangement = Arrangement.spacedBy(16.dp)
-
     ) {
-
         Text(
-
             text = "SmartFall AI",
-
             style = MaterialTheme.typography.headlineMedium
-
         )
 
         OutlinedButton(
-
             onClick = {
-
                 expanded = true
-
             }
-
         ) {
-
-            Text(selectedActivity)
-
+            Text(selectedActivityLabel.displayName)
         }
 
         DropdownMenu(
-
             expanded = expanded,
-
             onDismissRequest = {
-
                 expanded = false
-
             }
-
         ) {
-
-            activities.forEach {
-
+            ActivityLabel.entries.forEach { label ->
                 DropdownMenuItem(
-
                     text = {
-
-                        Text(it)
-
+                        Text(label.displayName)
                     },
-
                     onClick = {
-
-                        selectedActivity = it
-
+                        selectedActivityLabel = label
                         expanded = false
-
                     }
-
                 )
-
             }
-
         }
 
         HorizontalDivider()
-
         Text("Status : ${state.status}")
-
         Text("Samples : ${state.sampleCount}")
-
         Text("Current File")
-
         Text(state.currentFile)
-
         HorizontalDivider()
 
         if (!state.isRecording) {
-
             Button(
-
                 onClick = {
-
-                    onStart(
-
-                        selectedActivity
-
-                    )
-
+                    onStart(selectedActivityLabel.name)
                 }
 
             ) {

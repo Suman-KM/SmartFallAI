@@ -5,7 +5,11 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.os.SystemClock
 import com.suman.smartfallai.wear.model.SensorData
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -44,7 +48,36 @@ class WatchSensorManager(
     val sensorData: StateFlow<SensorData> =
         _sensorData.asStateFlow()
 
+    private var _sensorChannel = Channel<SensorData>(
+        capacity = 500,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
+
+    val sensorChannel: ReceiveChannel<SensorData>
+        get() = _sensorChannel
+
+    var sensorEventsReceived: Long = 0L
+        private set
+    var sensorEventsQueued: Long = 0L
+        private set
+    var sensorEventsDropped: Long = 0L
+        private set
+
+    private var bootOffsetMillis: Long = 0L
+    private var currentSequence: Long = 0L
+
     fun start() {
+        bootOffsetMillis = System.currentTimeMillis() - (SystemClock.elapsedRealtimeNanos() / 1_000_000L)
+        currentSequence = 0L
+        sensorEventsReceived = 0L
+        sensorEventsQueued = 0L
+        sensorEventsDropped = 0L
+
+        _sensorChannel.close()
+        _sensorChannel = Channel<SensorData>(
+            capacity = 500,
+            onBufferOverflow = BufferOverflow.DROP_OLDEST
+        )
 
         accelerometer?.let {
             sensorManager.registerListener(
@@ -73,9 +106,11 @@ class WatchSensorManager(
 
     fun stop() {
         sensorManager.unregisterListener(this)
+        _sensorChannel.close()
     }
 
     override fun onSensorChanged(event: SensorEvent) {
+        sensorEventsReceived++
 
         when (event.sensor.type) {
 
@@ -96,7 +131,7 @@ class WatchSensorManager(
             }
         }
 
-        publishSensorData()
+        publishSensorData(event.timestamp)
     }
 
     private fun updateOrientation(event: SensorEvent) {
@@ -128,26 +163,29 @@ class WatchSensorManager(
         ).toFloat()
     }
 
-    private fun publishSensorData() {
-
-        _sensorData.value = SensorData(
-
-            timestamp = System.currentTimeMillis(),
-
+    private fun publishSensorData(eventTimestampNanos: Long) {
+        val epochMillis = bootOffsetMillis + (eventTimestampNanos / 1_000_000L)
+        val data = SensorData(
+            sequence = currentSequence++,
+            timestamp = epochMillis,
             accX = accX,
             accY = accY,
             accZ = accZ,
-
             gyroX = gyroX,
             gyroY = gyroY,
             gyroZ = gyroZ,
-
             pitch = pitch,
             roll = roll,
             yaw = yaw,
-
             isValid = true
         )
+        _sensorData.value = data
+        val result = _sensorChannel.trySend(data)
+        if (result.isSuccess) {
+            sensorEventsQueued++
+        } else {
+            sensorEventsDropped++
+        }
     }
 
     override fun onAccuracyChanged(

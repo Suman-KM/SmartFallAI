@@ -10,7 +10,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.suman.smartfallai.wear"
+        applicationId = "com.suman.mobilesensorlogger"
         minSdk = 30
         targetSdk = 37
         versionCode = 1
@@ -36,7 +36,10 @@ android {
 }
 
 dependencies {
+    implementation("androidx.health:health-services-client:1.1.0-alpha05")
     implementation("com.google.android.gms:play-services-location:21.3.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.foundation)
