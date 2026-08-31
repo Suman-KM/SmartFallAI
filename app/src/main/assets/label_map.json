@@ -1,0 +1,56 @@
+{
+  "classes_14": [
+    "FALL_BACKWARD",
+    "FALL_FORWARD",
+    "FALL_FROM_SITTING",
+    "FALL_LEFT",
+    "FALL_RIGHT",
+    "JUMPING",
+    "LYING_DOWN",
+    "PICKING_UP_OBJECT",
+    "RUNNING",
+    "SITTING",
+    "SIT_DOWN",
+    "STANDING",
+    "STAND_UP",
+    "WALKING"
+  ],
+  "class_to_idx": {
+    "FALL_BACKWARD": 0,
+    "FALL_FORWARD": 1,
+    "FALL_FROM_SITTING": 2,
+    "FALL_LEFT": 3,
+    "FALL_RIGHT": 4,
+    "JUMPING": 5,
+    "LYING_DOWN": 6,
+    "PICKING_UP_OBJECT": 7,
+    "RUNNING": 8,
+    "SITTING": 9,
+    "SIT_DOWN": 10,
+    "STANDING": 11,
+    "STAND_UP": 12,
+    "WALKING": 13
+  },
+  "fall_class_indices": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "normal_class_indices": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13
+  ],
+  "binary_mapping": {
+    "0": "NORMAL",
+    "1": "FALL"
+  }
+}

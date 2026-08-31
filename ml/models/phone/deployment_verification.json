@@ -1,0 +1,10 @@
+{
+  "device": "PHONE",
+  "model": "1D_CNN",
+  "sample_windows_evaluated": 100,
+  "matching_predictions": 100,
+  "differing_predictions": 0,
+  "max_absolute_logit_difference": 5.7220458984375e-06,
+  "agreement_percentage": 100.0,
+  "status": "VERIFIED_100_PERCENT_EQUIVALENT"
+}

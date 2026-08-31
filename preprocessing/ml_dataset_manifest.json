@@ -1,0 +1,156 @@
+{
+  "creation_date": "2026-09-01",
+  "raw_dataset_checkpoint": "2026-08-31 13:06:18 to 2026-09-01 00:43:00",
+  "watch_raw_files": 252,
+  "phone_raw_files": 260,
+  "retained_activities": [
+    "STANDING",
+    "SITTING",
+    "WALKING",
+    "RUNNING",
+    "LYING_DOWN",
+    "JUMPING",
+    "SIT_DOWN",
+    "STAND_UP",
+    "PICKING_UP_OBJECT",
+    "FALL_FORWARD",
+    "FALL_BACKWARD",
+    "FALL_LEFT",
+    "FALL_RIGHT",
+    "FALL_FROM_SITTING"
+  ],
+  "excluded_activities": [
+    "SUDDEN_SIT",
+    "FALL_FORWARD_HANDS",
+    "FALL_FORWARD_KNEES",
+    "GOING_UPSTAIRS",
+    "GOING_DOWNSTAIRS"
+  ],
+  "window_configuration": {
+    "window_duration_seconds": 2.0,
+    "window_samples": 100,
+    "step_size_samples": 50,
+    "overlap_percentage": 50.0,
+    "sampling_frequency_target_hz": 50.0
+  },
+  "session_split": {
+    "seed": 42,
+    "strategy": "Stratified Session-Level Group Partition",
+    "ratios": {
+      "train": 0.7,
+      "validation": 0.15,
+      "test": 0.15
+    },
+    "watch": {
+      "train_sessions": 182,
+      "val_sessions": 35,
+      "test_sessions": 35,
+      "total": 252
+    },
+    "phone": {
+      "train_sessions": 175,
+      "val_sessions": 43,
+      "test_sessions": 42,
+      "total": 260
+    }
+  },
+  "feature_policy": {
+    "gps_features_included": false,
+    "timestamp_feature_included": false,
+    "session_id_feature_included": false,
+    "activity_label_in_input": false,
+    "watch_heart_rate_included": false
+  },
+  "pipelines": [
+    {
+      "id": "01_raw_standardized",
+      "description": "Minimal baseline: 9-DoF IMU temporal windowing with Train-only Z-score standardization",
+      "feature_dim": 9,
+      "normalization": "StandardScaler",
+      "watch_windows": {
+        "train": 13354,
+        "validation": 2519,
+        "test": 2629,
+        "total": 18502
+      },
+      "phone_windows": {
+        "train": 9698,
+        "validation": 2863,
+        "test": 2028,
+        "total": 14589
+      }
+    },
+    {
+      "id": "02_robust_scaling",
+      "description": "Robust scaling: Median and IQR normalization fitted on TRAIN only to mitigate sensor outlier sensitivity",
+      "feature_dim": 9,
+      "normalization": "RobustScaler",
+      "watch_windows": {
+        "train": 13354,
+        "validation": 2519,
+        "test": 2629,
+        "total": 18502
+      },
+      "phone_windows": {
+        "train": 9698,
+        "validation": 2863,
+        "test": 2028,
+        "total": 14589
+      }
+    },
+    {
+      "id": "03_signal_filtering",
+      "description": "Signal filtering: Per-session zero-phase 4th-order Butterworth low-pass filter (20 Hz cutoff) with Train-only standardization",
+      "feature_dim": 9,
+      "normalization": "Butterworth_LowPass_StandardScaler",
+      "watch_windows": {
+        "train": 13354,
+        "validation": 2519,
+        "test": 2629,
+        "total": 18502
+      },
+      "phone_windows": {
+        "train": 9698,
+        "validation": 2863,
+        "test": 2028,
+        "total": 14589
+      }
+    },
+    {
+      "id": "04_gravity_motion_separation",
+      "description": "Gravity-motion separation: 0.5 Hz low-pass gravity extraction isolating dynamic acceleration (dyn_acc = acc - gravity) with Train-only standardization",
+      "feature_dim": 9,
+      "normalization": "Gravity_Separation_StandardScaler",
+      "watch_windows": {
+        "train": 13354,
+        "validation": 2519,
+        "test": 2629,
+        "total": 18502
+      },
+      "phone_windows": {
+        "train": 9698,
+        "validation": 2863,
+        "test": 2028,
+        "total": 14589
+      }
+    },
+    {
+      "id": "05_motion_magnitude_features",
+      "description": "Motion magnitude features: 9-DoF IMU augmented with orientation-invariant accMagnitude and gyroMagnitude (11 channels) with Train-only standardization",
+      "feature_dim": 11,
+      "normalization": "Motion_Magnitude_StandardScaler",
+      "watch_windows": {
+        "train": 13354,
+        "validation": 2519,
+        "test": 2629,
+        "total": 18502
+      },
+      "phone_windows": {
+        "train": 9698,
+        "validation": 2863,
+        "test": 2028,
+        "total": 14589
+      }
+    }
+  ]
+}

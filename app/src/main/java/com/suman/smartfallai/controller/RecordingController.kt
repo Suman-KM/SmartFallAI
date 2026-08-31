@@ -31,6 +31,9 @@ class RecordingController(
     private val watchManager =
         WatchManager(context)
 
+    val fallInferenceEngine =
+        com.suman.smartfallai.ml.FallInferenceEngine(context)
+
     private val scope =
         CoroutineScope(Dispatchers.IO)
 
@@ -98,6 +101,19 @@ class RecordingController(
 
                 )
 
+                // Feed 9-DoF IMU to Real-time ONNX Fall Inference Engine
+                fallInferenceEngine.addSample(
+                    accX = sensor.accX,
+                    accY = sensor.accY,
+                    accZ = sensor.accZ,
+                    gyroX = sensor.gyroX,
+                    gyroY = sensor.gyroY,
+                    gyroZ = sensor.gyroZ,
+                    pitch = sensor.pitch,
+                    roll = sensor.roll,
+                    yaw = sensor.yaw
+                )
+
                 _state.value = _state.value.copy(
 
                     sampleCount = _state.value.sampleCount + 1
@@ -125,6 +141,8 @@ class RecordingController(
         csvLogger.stopLogging()
 
         watchManager.stopRecordingSession(stopTimestamp)
+
+        fallInferenceEngine.reset()
 
         _state.value = _state.value.copy(
 

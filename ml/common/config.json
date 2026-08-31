@@ -1,0 +1,35 @@
+{
+  "random_seed": 42,
+  "window_samples": 100,
+  "window_duration_seconds": 2.0,
+  "step_size": 50,
+  "num_classes": 14,
+  "training": {
+    "batch_size": 64,
+    "epochs": 25,
+    "learning_rate": 0.001,
+    "optimizer": "Adam",
+    "loss_function": "CrossEntropyLoss"
+  },
+  "random_forest": {
+    "n_estimators": 100,
+    "max_depth": 20,
+    "random_state": 42
+  },
+  "pipelines": [
+    "01_raw_standardized",
+    "02_robust_scaling",
+    "03_signal_filtering",
+    "04_gravity_motion_separation",
+    "05_motion_magnitude_features"
+  ],
+  "models": [
+    "CNN",
+    "BiLSTM",
+    "RandomForest"
+  ],
+  "devices": [
+    "watch",
+    "phone"
+  ]
+}

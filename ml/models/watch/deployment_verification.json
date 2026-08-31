@@ -1,0 +1,9 @@
+{
+  "device": "WATCH",
+  "model": "RandomForest",
+  "sample_windows_evaluated": 100,
+  "matching_predictions": 100,
+  "differing_predictions": 0,
+  "agreement_percentage": 100.0,
+  "status": "VERIFIED_100_PERCENT_EQUIVALENT"
+}

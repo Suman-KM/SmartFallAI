@@ -35,6 +35,9 @@ class RecordingController(
     private val phoneSyncManager =
         PhoneSyncManager(context)
 
+    val fallInferenceEngine =
+        com.suman.smartfallai.wear.ml.FallInferenceEngine(context)
+
     private val scope =
         CoroutineScope(Dispatchers.IO)
 
@@ -130,6 +133,19 @@ class RecordingController(
                         combinedSensor
                     )
 
+                    // Feed 9-DoF IMU to Real-time Watch Random Forest Fall Inference Engine
+                    fallInferenceEngine.addSample(
+                        accX = sensor.accX,
+                        accY = sensor.accY,
+                        accZ = sensor.accZ,
+                        gyroX = sensor.gyroX,
+                        gyroY = sensor.gyroY,
+                        gyroZ = sensor.gyroZ,
+                        pitch = sensor.pitch,
+                        roll = sensor.roll,
+                        yaw = sensor.yaw
+                    )
+
                     phoneSyncManager.sendWatchSample(
                         sessionId = currentSessionId,
                         data = combinedSensor
@@ -143,6 +159,7 @@ class RecordingController(
                 }
             } finally {
                 csvLogger.stopLogging()
+                fallInferenceEngine.reset()
                 android.util.Log.d("RecordingController", "Recording stopped. " +
                     "Received: ${sensorManager.sensorEventsReceived}, " +
                     "Queued: ${sensorManager.sensorEventsQueued}, " +

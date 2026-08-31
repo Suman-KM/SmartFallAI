@@ -1,0 +1,64 @@
+{
+  "pipeline_id": "04_gravity_motion_separation",
+  "description": "Gravity-motion separation: 0.5 Hz low-pass gravity extraction isolating dynamic acceleration (dyn_acc = acc - gravity) with Train-only standardization",
+  "window_size_samples": 100,
+  "window_duration_seconds": 2.0,
+  "step_size_samples": 50,
+  "overlap_percentage": 50.0,
+  "gravity_filter": {
+    "type": "Butterworth Low-pass",
+    "order": 2,
+    "cutoff_hz": 0.5,
+    "fs_hz": 50.0
+  },
+  "feature_names": [
+    "dyn_accX",
+    "dyn_accY",
+    "dyn_accZ",
+    "gyroX",
+    "gyroY",
+    "gyroZ",
+    "pitch",
+    "roll",
+    "yaw"
+  ],
+  "feature_count": 9,
+  "normalization": "StandardScaler",
+  "fit_split": "TRAIN",
+  "watch_summary": {
+    "train_shape": [
+      13354,
+      100,
+      9
+    ],
+    "val_shape": [
+      2519,
+      100,
+      9
+    ],
+    "test_shape": [
+      2629,
+      100,
+      9
+    ],
+    "total_windows": 18502
+  },
+  "phone_summary": {
+    "train_shape": [
+      9698,
+      100,
+      9
+    ],
+    "val_shape": [
+      2863,
+      100,
+      9
+    ],
+    "test_shape": [
+      2028,
+      100,
+      9
+    ],
+    "total_windows": 14589
+  }
+}

@@ -38,6 +38,7 @@ android {
 dependencies {
 
 
+    implementation("com.microsoft.onnxruntime:onnxruntime-android:1.18.0")
     implementation("androidx.health:health-services-client:1.1.0-alpha05")
     implementation("com.google.android.gms:play-services-location:21.3.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")

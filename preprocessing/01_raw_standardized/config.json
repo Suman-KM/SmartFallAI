@@ -1,0 +1,58 @@
+{
+  "pipeline_id": "01_raw_standardized",
+  "description": "Minimal baseline: 9-DoF IMU temporal windowing with Train-only Z-score standardization",
+  "window_size_samples": 100,
+  "window_duration_seconds": 2.0,
+  "step_size_samples": 50,
+  "overlap_percentage": 50.0,
+  "feature_names": [
+    "accX",
+    "accY",
+    "accZ",
+    "gyroX",
+    "gyroY",
+    "gyroZ",
+    "pitch",
+    "roll",
+    "yaw"
+  ],
+  "feature_count": 9,
+  "normalization": "StandardScaler",
+  "fit_split": "TRAIN",
+  "watch_summary": {
+    "train_shape": [
+      13354,
+      100,
+      9
+    ],
+    "val_shape": [
+      2519,
+      100,
+      9
+    ],
+    "test_shape": [
+      2629,
+      100,
+      9
+    ],
+    "total_windows": 18502
+  },
+  "phone_summary": {
+    "train_shape": [
+      9698,
+      100,
+      9
+    ],
+    "val_shape": [
+      2863,
+      100,
+      9
+    ],
+    "test_shape": [
+      2028,
+      100,
+      9
+    ],
+    "total_windows": 14589
+  }
+}

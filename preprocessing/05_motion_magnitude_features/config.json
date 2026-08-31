@@ -1,0 +1,60 @@
+{
+  "pipeline_id": "05_motion_magnitude_features",
+  "description": "Motion magnitude features: 9-DoF IMU augmented with orientation-invariant accMagnitude and gyroMagnitude (11 channels) with Train-only standardization",
+  "window_size_samples": 100,
+  "window_duration_seconds": 2.0,
+  "step_size_samples": 50,
+  "overlap_percentage": 50.0,
+  "feature_names": [
+    "accX",
+    "accY",
+    "accZ",
+    "gyroX",
+    "gyroY",
+    "gyroZ",
+    "accMagnitude",
+    "gyroMagnitude",
+    "pitch",
+    "roll",
+    "yaw"
+  ],
+  "feature_count": 11,
+  "normalization": "StandardScaler",
+  "fit_split": "TRAIN",
+  "watch_summary": {
+    "train_shape": [
+      13354,
+      100,
+      11
+    ],
+    "val_shape": [
+      2519,
+      100,
+      11
+    ],
+    "test_shape": [
+      2629,
+      100,
+      11
+    ],
+    "total_windows": 18502
+  },
+  "phone_summary": {
+    "train_shape": [
+      9698,
+      100,
+      11
+    ],
+    "val_shape": [
+      2863,
+      100,
+      11
+    ],
+    "test_shape": [
+      2028,
+      100,
+      11
+    ],
+    "total_windows": 14589
+  }
+}
