@@ -1,61 +1,71 @@
 package com.suman.smartfallai.wear.ml
 
 import android.content.Context
-import org.json.JSONObject
+import java.io.BufferedInputStream
+import java.io.DataInputStream
 
 class WatchRandomForestEngine(context: Context) {
 
-    private class DecisionTreeNode(
-        val left: Int,
-        val right: Int,
-        val feature: Int,
-        val threshold: Float,
-        val values: FloatArray
+    private class FastTree(
+        val nodeCount: Int,
+        val left: ShortArray,
+        val right: ShortArray,
+        val threshold: FloatArray,
+        val feature: ShortArray,
+        val isLeaf: ByteArray,
+        val leafValues: FloatArray // size: nodeCount * 14
     )
 
-    private class DecisionTree(
-        val nodes: Array<DecisionTreeNode>
-    )
-
-    private val trees = ArrayList<DecisionTree>()
+    private val trees = ArrayList<FastTree>()
     private var numClasses = 14
 
     init {
         try {
-            val jsonString = context.assets.open("trees.json").bufferedReader().use { it.readText() }
-            val root = JSONObject(jsonString)
-            numClasses = root.optInt("n_classes", 14)
-            val treesArray = root.getJSONArray("trees")
+            val inputStream = context.assets.open("trees.bin")
+            DataInputStream(BufferedInputStream(inputStream, 65536)).use { dis ->
+                val magic = ByteArray(4)
+                dis.readFully(magic)
+                val nTrees = dis.readInt()
+                numClasses = dis.readInt()
+                val nFeats = dis.readInt()
 
-            for (t in 0 until treesArray.length()) {
-                val tObj = treesArray.getJSONObject(t)
-                val nodeCount = tObj.getInt("node_count")
-                val cl = tObj.getJSONArray("children_left")
-                val cr = tObj.getJSONArray("children_right")
-                val feat = tObj.getJSONArray("feature")
-                val th = tObj.getJSONArray("threshold")
-                val vals = tObj.getJSONArray("values")
+                for (t in 0 until nTrees) {
+                    val nodeCount = dis.readInt()
+                    val left = ShortArray(nodeCount)
+                    val right = ShortArray(nodeCount)
+                    val threshold = FloatArray(nodeCount)
+                    val feature = ShortArray(nodeCount)
+                    val isLeaf = ByteArray(nodeCount)
+                    val leafValues = FloatArray(nodeCount * numClasses)
 
-                val nodes = Array(nodeCount) { i ->
-                    val vArr = vals.getJSONArray(i)
-                    val vFloat = FloatArray(vArr.length()) { k -> vArr.getDouble(k).toFloat() }
-                    DecisionTreeNode(
-                        left = cl.getInt(i),
-                        right = cr.getInt(i),
-                        feature = feat.getInt(i),
-                        threshold = th.getDouble(i).toFloat(),
-                        values = vFloat
-                    )
+                    for (n in 0 until nodeCount) {
+                        left[n] = dis.readShort()
+                        right[n] = dis.readShort()
+                        threshold[n] = dis.readFloat()
+                        feature[n] = dis.readShort()
+                        val leafFlag = dis.readByte()
+                        isLeaf[n] = leafFlag
+
+                        if (leafFlag.toInt() == 1) {
+                            val baseOffset = n * numClasses
+                            for (c in 0 until numClasses) {
+                                leafValues[baseOffset + c] = dis.readFloat()
+                            }
+                        }
+                    }
+
+                    trees.add(FastTree(nodeCount, left, right, threshold, feature, isLeaf, leafValues))
                 }
-                trees.add(DecisionTree(nodes))
             }
+            android.util.Log.d("WatchFallML", "Successfully loaded ${trees.size} fast binary trees ($numClasses classes).")
         } catch (e: Exception) {
             e.printStackTrace()
+            android.util.Log.e("WatchFallML", "Failed to load trees.bin: ${e.message}")
         }
     }
 
     /**
-     * Evaluates 72 extracted features across all 100 trees.
+     * Evaluates 72 extracted features across all 100 trees in flat primitive arrays.
      * Returns a 14-class probability distribution.
      */
     fun predictProba(features: FloatArray): FloatArray {
@@ -63,25 +73,23 @@ class WatchRandomForestEngine(context: Context) {
         val numTrees = trees.size
         if (numTrees == 0) return totalProbs
 
-        for (tree in trees) {
-            var nodeIdx = 0
-            val nodes = tree.nodes
+        for (tIdx in 0 until numTrees) {
+            val tree = trees[tIdx]
+            var node = 0
 
-            while (nodes[nodeIdx].left != -1) {
-                val node = nodes[nodeIdx]
-                val fVal = features[node.feature]
-                nodeIdx = if (fVal <= node.threshold) {
-                    node.left
+            while (tree.isLeaf[node].toInt() == 0) {
+                val fIdx = tree.feature[node].toInt()
+                val fVal = features[fIdx]
+                node = if (fVal <= tree.threshold[node]) {
+                    tree.left[node].toInt()
                 } else {
-                    node.right
+                    tree.right[node].toInt()
                 }
             }
 
-            val leafValues = nodes[nodeIdx].values
+            val baseOffset = node * numClasses
             for (c in 0 until numClasses) {
-                if (c < leafValues.size) {
-                    totalProbs[c] += leafValues[c]
-                }
+                totalProbs[c] += tree.leafValues[baseOffset + c]
             }
         }
 
