@@ -73,10 +73,12 @@ class FallInferenceEngine(context: Context) {
     private fun processWindow(window: Array<FloatArray>) {
         val startTime = System.currentTimeMillis()
 
-        // 0. Compute raw kinematic dynamics before scaling (physical units: m/s^2, rad/s)
+        // 0. Compute raw kinematic dynamics before scaling (physical units: m/s^2, rad/s, m/s^3)
         var maxAccMag = 0.0f
         var minAccMag = Float.MAX_VALUE
         var maxGyroMag = 0.0f
+        var maxJerk = 0.0f
+        var prevAccMag = -1.0f
         var sumAccMag = 0.0f
         var sumAccMagSq = 0.0f
         var validAccCount = 0
@@ -92,6 +94,12 @@ class FallInferenceEngine(context: Context) {
                 sumAccMag += accMag
                 sumAccMagSq += accMag * accMag
                 validAccCount++
+
+                if (prevAccMag >= 0.0f) {
+                    val j = kotlin.math.abs(accMag - prevAccMag) / 0.02f
+                    if (j > maxJerk) maxJerk = j
+                }
+                prevAccMag = accMag
             }
 
             val gx = sample[3]
@@ -105,19 +113,19 @@ class FallInferenceEngine(context: Context) {
         val accVariance = if (validAccCount > 0) kotlin.math.max(0.0f, (sumAccMagSq / validAccCount) - (accMean * accMean)) else 0.0f
         val accStd = kotlin.math.sqrt(accVariance)
 
-        // Phase 13C Calibrated Kinematic Impact Shock Gate (Phone SM-A507FN):
-        // Real falls produce sharp ground impact (>= 18.0 m/s^2 = 1.83g) or intense rotational tumble (accRange >= 10 m/s^2 && gyro >= 2.5 rad/s)
-        val hasImpact = (maxAccMag >= 18.0f) || (accRange >= 10.0f && maxGyroMag >= 2.5f)
-        if (hasImpact) {
-            recentImpactCountdown = 3 // remember impact across sliding windows (~3 seconds)
-        } else if (recentImpactCountdown > 0) {
-            recentImpactCountdown--
-        }
+        // Stage 2: Abnormal Impact Collision Shock Gate (Phone SM-A507FN):
+        // Real ground collisions produce high acceleration (>= 20.0 m/s^2) with abrupt deceleration jerk (>= 350 m/s^3)
+        // or intense rotational tumble (accRange >= 14 m/s^2, jerk >= 250 m/s^3, gyro >= 3.5 rad/s)
+        val isCollisionShock = (maxAccMag >= 20.0f && maxJerk >= 350.0f) ||
+                               (accRange >= 14.0f && maxJerk >= 250.0f && maxGyroMag >= 3.5f)
 
-        // Active non-fall thrashing rejection:
-        // Continuous energetic activities (e.g. running or jumping) display continuous oscillating variance (accStd >= 4.5 m/s^2 && maxGyroMag >= 3.5 rad/s)
-        // In contrast, post-impact fall windows settle to stillness or low dynamic variance (< 2.0 m/s^2)
-        val isContinuousThrashing = (accStd >= 4.5f) && (maxGyroMag >= 3.5f)
+        // Stage 3: Continuous Locomotion Cadence Check:
+        // In active running or rhythmic locomotion, dynamic variance and rotation continue indefinitely
+        val isLocomotionCadence = (accStd >= 3.2f && maxGyroMag >= 3.5f) || (accStd >= 5.0f)
+
+        // Stage 4: Post-Impact Stillness & Immobility Check:
+        // Following impact, a fall victim rests recumbent on the floor (variance < 2.4 m/s^2, gyro < 2.2 rad/s)
+        val isSettledImmobility = (accStd <= 2.4f) && (maxGyroMag <= 2.2f)
 
         // 1. Preprocess with frozen Train RobustScaler
         scaler.transformInPlace(window)
@@ -125,10 +133,11 @@ class FallInferenceEngine(context: Context) {
         // 2. ONNX 1D-CNN Model Inference
         val probs = onnxEngine.predictProba(window)
 
-        // 3. Calculate top prediction and fall probability
+        // 3. Calculate top prediction, fall probability, and lying down probability
         var topIdx = 0
         var topConf = 0.0f
         var fallProb = 0.0f
+        val lyingDownProb = probs.getOrElse(6) { 0.0f } // Class index 6: LYING_DOWN
 
         for (i in probs.indices) {
             if (probs[i] > topConf) {
@@ -142,29 +151,35 @@ class FallInferenceEngine(context: Context) {
         }
 
         val latency = System.currentTimeMillis() - startTime
-        // Phase 13C Calibrated Fall Candidate:
-        // 1. Model fall probability >= 0.45 (verified across all 5 fall types)
-        // 2. Physical impact shock event verified (current or remembered within 3 windows)
-        // 3. Reject active running/jumping thrashing
-        val isKinematicFallCandidate = (fallProb >= 0.45f) && (hasImpact || recentImpactCountdown > 0) && (!isContinuousThrashing)
 
-        // 4. Fall State Machine with 2-Window Consensus & Interactive Countdown
+        // Multi-Stage Temporal Fall Verification:
+        var triggeredFallSuspected = false
+
         synchronized(this) {
             when (_currentState.value) {
                 FallState.MONITORING -> {
-                    if (isKinematicFallCandidate) {
-                        suspectedConsecutiveWindows++
-                        if (suspectedConsecutiveWindows >= 2) {
-                            Log.w("PhoneFallML", "2-Window consensus confirmed fall with impact (AccPeak=$maxAccMag, AccRng=$accRange, GyroPeak=$maxGyroMag)! Triggering FALL_SUSPECTED and countdown.")
+                    if (isCollisionShock) {
+                        // Stage 2: Collision shock registered -> Arm 4-window verification horizon (~2 to 3s)
+                        recentImpactCountdown = 4
+                        Log.i("PhoneFallML", "Potential impact collision detected! AccPeak=$maxAccMag, JerkPeak=$maxJerk. Awaiting post-impact stillness confirmation.")
+                    } else if (recentImpactCountdown > 0) {
+                        if (isLocomotionCadence) {
+                            // Stage 3: Movement continuation detected! User resumed walking/running -> DISCARD!
+                            recentImpactCountdown = 0
+                            Log.d("PhoneFallML", "Locomotion cadence detected after shock (AccStd=$accStd, GyroPeak=$maxGyroMag). Aborting false alarm.")
+                        } else if (isSettledImmobility && (fallProb >= 0.40f || (lyingDownProb >= 0.45f && accStd <= 1.8f))) {
+                            // Stage 4: Post-impact immobility confirmed with fall/recumbent posture!
+                            recentImpactCountdown = 0
+                            triggeredFallSuspected = true
                             _currentState.value = FallState.FALL_SUSPECTED
                             startCountdown()
+                        } else {
+                            recentImpactCountdown--
                         }
-                    } else {
-                        suspectedConsecutiveWindows = 0
                     }
                 }
                 FallState.FALL_SUSPECTED -> {
-                    // Countdown is running. Keep processing background inference but preserve countdown state
+                    // Countdown is running. Preserve countdown state
                 }
                 FallState.FALL_CONFIRMED -> {
                     // Escalated to SOS
@@ -190,7 +205,8 @@ class FallInferenceEngine(context: Context) {
             inferenceLatencyMs = latency
         )
 
-        Log.d("PhoneFallML", "Inference: Activity=${classNames.getOrElse(topIdx) { "UNKNOWN" }} ($topConf), FallProb=$fallProb, AccPeak=${"%.2f".format(maxAccMag)}, AccRng=${"%.2f".format(accRange)}, GyroPeak=${"%.2f".format(maxGyroMag)}, Impact=$hasImpact, State=${_currentState.value}, Latency=${latency}ms")
+        // Structured Debug Logging for Phase 13D
+        Log.d("PhoneFallML", "Activity=${classNames.getOrElse(topIdx) { "UNKNOWN" }}, FallProb=${"%.4f".format(fallProb)}, AccPeak=${"%.2f".format(maxAccMag)}, AccMin=${"%.2f".format(minAccMag)}, AccRange=${"%.2f".format(accRange)}, AccStd=${"%.2f".format(accStd)}, GyroPeak=${"%.2f".format(maxGyroMag)}, JerkPeak=${"%.1f".format(maxJerk)}, Impact=$isCollisionShock, TemporalScore=$recentImpactCountdown, PostImpact=$isSettledImmobility, ActiveMotion=$isLocomotionCadence, State=${_currentState.value}, Latency=${latency}ms")
     }
 
     private fun startCountdown() {
