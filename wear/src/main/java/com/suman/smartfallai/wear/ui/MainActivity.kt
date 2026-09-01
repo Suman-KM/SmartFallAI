@@ -102,6 +102,16 @@ class MainActivity : ComponentActivity() {
 
 
 
+            val fallState =
+                viewModel.fallState
+                    .collectAsStateWithLifecycle()
+                    .value
+
+            val countdownRemaining =
+                viewModel.countdownRemaining
+                    .collectAsStateWithLifecycle()
+                    .value
+
             androidx.compose.runtime.DisposableEffect(state.isRecording) {
                 val view = window.decorView
                 if (state.isRecording) {
@@ -118,47 +128,25 @@ class MainActivity : ComponentActivity() {
             }
 
             MobileSensorLoggerTheme {
-
-
-
                 SmartFallScreen(
-
-
-
                     isRecording = state.isRecording,
-
-
-
                     activity = state.activity,
-
-
-
                     sampleCount = state.sampleCount.toInt(),
-
-
-
                     gpsData = gpsData,
-
-
-
                     heartRate = heartRate,
-
-
-
                     spo2 = 0,
                     pressure = 0f,
-
+                    fallState = fallState,
+                    countdownRemaining = countdownRemaining,
+                    onCancelFallAlert = { viewModel.cancelFallAlert() },
+                    onDismissAlert = { viewModel.dismissAlert() },
                     onStart = { activity ->
                         viewModel.startRecording(activity)
                     },
-
                     onStop = {
                         viewModel.stopRecording()
                     }
                 )
-
-
-
             }
 
 

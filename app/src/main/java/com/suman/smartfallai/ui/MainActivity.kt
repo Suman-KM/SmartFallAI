@@ -37,6 +37,14 @@ class MainActivity : ComponentActivity() {
                 .recordingState
                 .collectAsStateWithLifecycle()
 
+            val fallState by viewModel
+                .fallState
+                .collectAsStateWithLifecycle()
+
+            val countdownRemaining by viewModel
+                .countdownRemaining
+                .collectAsStateWithLifecycle()
+
             androidx.compose.runtime.DisposableEffect(recordingState.isRecording) {
                 val view = window.decorView
                 if (recordingState.isRecording) {
@@ -54,6 +62,10 @@ class MainActivity : ComponentActivity() {
 
             SmartFallScreen(
                 state = recordingState,
+                fallState = fallState,
+                countdownRemaining = countdownRemaining,
+                onCancelFallAlert = { viewModel.cancelFallAlert() },
+                onDismissAlert = { viewModel.dismissAlert() },
                 onStart = { activity ->
                     viewModel.startRecording(activity)
                 },

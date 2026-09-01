@@ -26,6 +26,20 @@ class SmartFallViewModel(
     val gpsData: StateFlow<GpsData> =
         gpsManager.gpsData
 
+    val fallState: StateFlow<com.suman.smartfallai.ml.FallState> =
+        recordingController.fallInferenceEngine.currentState
+
+    val countdownRemaining: StateFlow<Int> =
+        recordingController.fallInferenceEngine.countdownRemaining
+
+    fun cancelFallAlert() {
+        recordingController.fallInferenceEngine.cancelCountdown()
+    }
+
+    fun dismissAlert() {
+        recordingController.fallInferenceEngine.dismissAlert()
+    }
+
     fun startRecording(activity: String) {
 
         viewModelScope.launch {

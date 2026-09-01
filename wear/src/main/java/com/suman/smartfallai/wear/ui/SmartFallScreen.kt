@@ -32,6 +32,10 @@ fun SmartFallScreen(
     heartRate: Int = 0,
     spo2: Int = 0,
     pressure: Float = 0f,
+    fallState: com.suman.smartfallai.wear.ml.FallState = com.suman.smartfallai.wear.ml.FallState.MONITORING,
+    countdownRemaining: Int = 0,
+    onCancelFallAlert: () -> Unit = {},
+    onDismissAlert: () -> Unit = {},
     onStart: (String) -> Unit,
     onStop: () -> Unit
 ){
@@ -58,6 +62,61 @@ fun SmartFallScreen(
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )
+            }
+
+            // --- INTERACTIVE COUNTDOWN & EMERGENCY CARDS ---
+            if (fallState == com.suman.smartfallai.wear.ml.FallState.FALL_SUSPECTED) {
+                item {
+                    Card(
+                        onClick = {},
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFFB00020))
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(6.dp).fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text("⚠️ FALL DETECTED", color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                            Spacer(modifier = Modifier.height(2.dp))
+                            Text("Are you okay?", color = Color.White, fontSize = 10.sp)
+                            Spacer(modifier = Modifier.height(2.dp))
+                            Text("$countdownRemaining s", color = Color.Yellow, fontSize = 24.sp, fontWeight = FontWeight.Black)
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Button(
+                                onClick = onCancelFallAlert,
+                                modifier = Modifier.fillMaxWidth().height(34.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00C853))
+                            ) {
+                                Text("I'M OK", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                            }
+                        }
+                    }
+                }
+            } else if (fallState == com.suman.smartfallai.wear.ml.FallState.SOS_TRIGGERED || fallState == com.suman.smartfallai.wear.ml.FallState.FALL_CONFIRMED) {
+                item {
+                    Card(
+                        onClick = {},
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFFD50000))
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(6.dp).fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text("🚨 SOS SENT", color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                            Spacer(modifier = Modifier.height(2.dp))
+                            Text("sumankmdvg@gmail.com", color = Color.White, fontSize = 9.sp)
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Button(
+                                onClick = onDismissAlert,
+                                modifier = Modifier.fillMaxWidth().height(30.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray)
+                            ) {
+                                Text("DISMISS", color = Color.White, fontSize = 10.sp)
+                            }
+                        }
+                    }
+                }
             }
 
             item {

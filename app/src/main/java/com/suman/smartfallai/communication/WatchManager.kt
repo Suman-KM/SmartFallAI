@@ -20,10 +20,16 @@ class WatchManager(
     private val nodeClient = Wearable.getNodeClient(context)
     private var currentSessionId = ""
 
+    private val emergencyManager =
+        com.suman.smartfallai.emergency.EmergencyManager(context)
+
+    init {
+        messageClient.addListener(this)
+    }
+
     fun startRecordingSession(activity: String, sessionId: String): String {
         currentSessionId = sessionId
         val fileName = watchCsvLogger.startLogging(activity, sessionId)
-        messageClient.addListener(this)
         isReceiving = true
 
         val payload = "$sessionId,$activity".toByteArray(Charsets.UTF_8)
@@ -39,7 +45,6 @@ class WatchManager(
     fun stopRecordingSession(stopTimestamp: Long) {
         if (!isReceiving) return
 
-        messageClient.removeListener(this)
         watchCsvLogger.stopLogging()
         isReceiving = false
 
@@ -56,26 +61,28 @@ class WatchManager(
     override fun onMessageReceived(
         messageEvent: MessageEvent
     ) {
-
-        if (!isReceiving) {
-            return
+        when (messageEvent.path) {
+            WATCH_SAMPLE_PATH -> {
+                if (isReceiving) {
+                    watchCsvLogger.log(
+                        String(messageEvent.data, Charsets.UTF_8)
+                    )
+                }
+            }
+            SOS_TRIGGERED_PATH -> {
+                val dataStr = String(messageEvent.data, Charsets.UTF_8)
+                android.util.Log.i("WatchManager", "Received SOS trigger from Watch: $dataStr")
+                val parts = dataStr.split(",")
+                val timestamp = parts.getOrNull(2)?.toLongOrNull() ?: System.currentTimeMillis()
+                emergencyManager.sendEmergencyAlert("Samsung Galaxy Watch 4 (SM-R870)", timestamp)
+            }
         }
-
-        if (messageEvent.path != WATCH_SAMPLE_PATH) {
-            return
-        }
-
-        watchCsvLogger.log(
-            String(
-                messageEvent.data,
-                Charsets.UTF_8
-            )
-        )
     }
 
     companion object {
         const val WATCH_SAMPLE_PATH = "/smartfallai/watch_sample"
         const val START_RECORDING_PATH = "/smartfallai/start_recording"
         const val STOP_RECORDING_PATH = "/smartfallai/stop_recording"
+        const val SOS_TRIGGERED_PATH = "/smartfallai/sos_triggered"
     }
 }

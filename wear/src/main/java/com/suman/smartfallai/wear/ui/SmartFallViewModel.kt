@@ -36,20 +36,28 @@ class SmartFallViewModel(
     val recordingState =
         recordingController.state
 
+    val fallState =
+        recordingController.fallInferenceEngine.currentState
 
+    val countdownRemaining =
+        recordingController.fallInferenceEngine.countdownRemaining
+
+    fun cancelFallAlert() {
+        recordingController.fallInferenceEngine.cancelCountdown()
+    }
+
+    fun dismissAlert() {
+        recordingController.fallInferenceEngine.dismissAlert()
+    }
 
     val sensorData =
         recordingController.sensorData
-
-
 
     val gpsData =
         recordingController.gpsData
 
     private val _heartRate =
         MutableStateFlow(-1)
-
-
 
     val heartRate =
         _heartRate.asStateFlow()
