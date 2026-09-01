@@ -43,10 +43,14 @@ class FallInferenceEngine(context: Context) {
 
     private var countdownJob: Job? = null
     private var suspectedConsecutiveWindows = 0
+    private var recentImpactCountdown = 0
 
     fun addSample(accX: Float, accY: Float, accZ: Float,
                   gyroX: Float, gyroY: Float, gyroZ: Float,
                   pitch: Float, roll: Float, yaw: Float) {
+        // Discard uninitialized sensor samples before accelerometer is active
+        if (accX == 0f && accY == 0f && accZ == 0f) return
+
         val sample = floatArrayOf(accX, accY, accZ, gyroX, gyroY, gyroZ, pitch, roll, yaw)
 
         synchronized(sampleBuffer) {
@@ -68,6 +72,37 @@ class FallInferenceEngine(context: Context) {
 
     private fun processWindow(window: Array<FloatArray>) {
         val startTime = System.currentTimeMillis()
+
+        // 0. Compute raw kinematic dynamics before scaling (physical units: m/s^2, rad/s)
+        var maxAccMag = 0.0f
+        var minAccMag = Float.MAX_VALUE
+        var maxGyroMag = 0.0f
+        for (sample in window) {
+            val ax = sample[0]
+            val ay = sample[1]
+            val az = sample[2]
+            val accMag = kotlin.math.sqrt(ax * ax + ay * ay + az * az)
+            if (accMag > 1.0f) {
+                if (accMag > maxAccMag) maxAccMag = accMag
+                if (accMag < minAccMag) minAccMag = accMag
+            }
+
+            val gx = sample[3]
+            val gy = sample[4]
+            val gz = sample[5]
+            val gyroMag = kotlin.math.sqrt(gx * gx + gy * gy + gz * gz)
+            if (gyroMag > maxGyroMag) maxGyroMag = gyroMag
+        }
+        val accRange = if (minAccMag < Float.MAX_VALUE) (maxAccMag - minAccMag) else 0.0f
+
+        // Kinematic impact shock condition: requires physical disturbance
+        // In real falls, acc reaches >= 16 m/s^2 (>1.63g) or high tumble (accRange >= 10 m/s^2 && gyro >= 2.5 rad/s)
+        val hasImpact = (maxAccMag >= 16.0f) || (accRange >= 10.0f && maxGyroMag >= 2.5f)
+        if (hasImpact) {
+            recentImpactCountdown = 3 // remember impact across sliding windows (~3 seconds)
+        } else if (recentImpactCountdown > 0) {
+            recentImpactCountdown--
+        }
 
         // 1. Preprocess with frozen Train RobustScaler
         scaler.transformInPlace(window)
@@ -95,16 +130,17 @@ class FallInferenceEngine(context: Context) {
         }
 
         val latency = System.currentTimeMillis() - startTime
-        val isInstantFall = fallProb >= 0.50f
+        // Physically justified fall candidate: ML fall probability >= 0.50 AND kinematic impact history
+        val isKinematicFallCandidate = (fallProb >= 0.50f) && (hasImpact || recentImpactCountdown > 0)
 
         // 5. Fall State Machine with 2-Window Consensus & Interactive Countdown
         synchronized(this) {
             when (_currentState.value) {
                 FallState.MONITORING -> {
-                    if (isInstantFall) {
+                    if (isKinematicFallCandidate) {
                         suspectedConsecutiveWindows++
                         if (suspectedConsecutiveWindows >= 2) {
-                            Log.w("WatchFallML", "2-Window consensus confirmed fall! Triggering FALL_SUSPECTED and countdown.")
+                            Log.w("WatchFallML", "2-Window consensus confirmed fall with impact (AccPeak=$maxAccMag, AccRng=$accRange, GyroPeak=$maxGyroMag)! Triggering FALL_SUSPECTED and countdown.")
                             _currentState.value = FallState.FALL_SUSPECTED
                             startCountdown()
                         }
@@ -124,6 +160,7 @@ class FallInferenceEngine(context: Context) {
                 FallState.CANCELLED -> {
                     _currentState.value = FallState.MONITORING
                     suspectedConsecutiveWindows = 0
+                    recentImpactCountdown = 0
                 }
             }
         }
@@ -138,7 +175,7 @@ class FallInferenceEngine(context: Context) {
             inferenceLatencyMs = latency
         )
 
-        Log.d("WatchFallML", "Inference: Activity=${classNames.getOrElse(topIdx) { "UNKNOWN" }} ($topConf), FallProb=$fallProb, State=${_currentState.value}, Latency=${latency}ms")
+        Log.d("WatchFallML", "Inference: Activity=${classNames.getOrElse(topIdx) { "UNKNOWN" }} ($topConf), FallProb=$fallProb, AccPeak=${"%.2f".format(maxAccMag)}, AccRng=${"%.2f".format(accRange)}, GyroPeak=${"%.2f".format(maxGyroMag)}, Impact=$hasImpact, State=${_currentState.value}, Latency=${latency}ms")
     }
 
     private fun startCountdown() {
@@ -167,6 +204,7 @@ class FallInferenceEngine(context: Context) {
         countdownJob = null
         _countdownRemaining.value = 0
         suspectedConsecutiveWindows = 0
+        recentImpactCountdown = 0
         _currentState.value = FallState.CANCELLED
         _currentState.value = FallState.MONITORING
     }
@@ -177,6 +215,7 @@ class FallInferenceEngine(context: Context) {
         countdownJob = null
         _countdownRemaining.value = 0
         suspectedConsecutiveWindows = 0
+        recentImpactCountdown = 0
         _currentState.value = FallState.MONITORING
     }
 
@@ -187,6 +226,7 @@ class FallInferenceEngine(context: Context) {
             sampleBuffer.clear()
             samplesSinceLastInference = 0
             suspectedConsecutiveWindows = 0
+            recentImpactCountdown = 0
             _countdownRemaining.value = 0
             _currentState.value = FallState.MONITORING
             _lastResult.value = null
