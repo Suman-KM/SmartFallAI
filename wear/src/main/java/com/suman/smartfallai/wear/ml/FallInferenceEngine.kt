@@ -77,6 +77,10 @@ class FallInferenceEngine(context: Context) {
         var maxAccMag = 0.0f
         var minAccMag = Float.MAX_VALUE
         var maxGyroMag = 0.0f
+        var sumAccMag = 0.0f
+        var sumAccMagSq = 0.0f
+        var validAccCount = 0
+
         for (sample in window) {
             val ax = sample[0]
             val ay = sample[1]
@@ -85,6 +89,9 @@ class FallInferenceEngine(context: Context) {
             if (accMag > 1.0f) {
                 if (accMag > maxAccMag) maxAccMag = accMag
                 if (accMag < minAccMag) minAccMag = accMag
+                sumAccMag += accMag
+                sumAccMagSq += accMag * accMag
+                validAccCount++
             }
 
             val gx = sample[3]
@@ -94,15 +101,23 @@ class FallInferenceEngine(context: Context) {
             if (gyroMag > maxGyroMag) maxGyroMag = gyroMag
         }
         val accRange = if (minAccMag < Float.MAX_VALUE) (maxAccMag - minAccMag) else 0.0f
+        val accMean = if (validAccCount > 0) sumAccMag / validAccCount else 9.81f
+        val accVariance = if (validAccCount > 0) kotlin.math.max(0.0f, (sumAccMagSq / validAccCount) - (accMean * accMean)) else 0.0f
+        val accStd = kotlin.math.sqrt(accVariance)
 
-        // Kinematic impact shock condition: requires physical disturbance
-        // In real falls, acc reaches >= 16 m/s^2 (>1.63g) or high tumble (accRange >= 10 m/s^2 && gyro >= 2.5 rad/s)
-        val hasImpact = (maxAccMag >= 16.0f) || (accRange >= 10.0f && maxGyroMag >= 2.5f)
+        // Phase 13C Calibrated Kinematic Impact Shock Gate (Watch SM-R870):
+        // Real wrist falls produce impact shock (>= 20.0 m/s^2 = 2.04g) or arm rotational tumble (accRange >= 12 m/s^2 && gyro >= 3.0 rad/s)
+        val hasImpact = (maxAccMag >= 20.0f) || (accRange >= 12.0f && maxGyroMag >= 3.0f)
         if (hasImpact) {
             recentImpactCountdown = 3 // remember impact across sliding windows (~3 seconds)
         } else if (recentImpactCountdown > 0) {
             recentImpactCountdown--
         }
+
+        // Active non-fall thrashing rejection:
+        // Continuous energetic activities like repetitive jumping produce continuous extreme wrist variance (accStd >= 9.0 m/s^2 && maxGyroMag >= 4.0 rad/s)
+        // In contrast, post-impact wrist fall windows settle quickly to lower dynamic variance (< 3.0 m/s^2)
+        val isContinuousThrashing = (accStd >= 9.0f) && (maxGyroMag >= 4.0f)
 
         // 1. Preprocess with frozen Train RobustScaler
         scaler.transformInPlace(window)
@@ -130,8 +145,11 @@ class FallInferenceEngine(context: Context) {
         }
 
         val latency = System.currentTimeMillis() - startTime
-        // Physically justified fall candidate: ML fall probability >= 0.50 AND kinematic impact history
-        val isKinematicFallCandidate = (fallProb >= 0.50f) && (hasImpact || recentImpactCountdown > 0)
+        // Phase 13C Calibrated Fall Candidate:
+        // 1. Model fall probability >= 0.45 (preserves all fall directions including lateral and sitting)
+        // 2. Physical impact shock event verified (current or remembered within 3 windows)
+        // 3. Reject active jumping/running thrashing
+        val isKinematicFallCandidate = (fallProb >= 0.45f) && (hasImpact || recentImpactCountdown > 0) && (!isContinuousThrashing)
 
         // 5. Fall State Machine with 2-Window Consensus & Interactive Countdown
         synchronized(this) {
