@@ -1,0 +1,291 @@
+--------- beginning of main
+09-03 16:43:40.009   287   287 I hwservicemanager: getTransport: Cannot find entry android.hardware.memtrack@1.0::IMemtrack/default in either framework or device VINTF manifest.
+09-03 16:43:40.022   287   287 I hwservicemanager: getTransport: Cannot find entry android.hardware.memtrack@1.0::IMemtrack/default in either framework or device VINTF manifest.
+09-03 16:43:40.025 18689 18689 E HidlServiceManagement: Service android.hardware.memtrack@1.0::IMemtrack/default must be in VINTF manifest in order to register/get.
+09-03 16:43:40.027 18689 18689 E LegacySupport: Could not register service android.hardware.memtrack@1.0::IMemtrack/default (-2147483648).
+09-03 16:43:40.034   458   470 D WifiHAL : GetLinkStatCommand: zero radio case
+09-03 16:43:40.078   601   857 D ConnectivityService: NetReassign [no changes] [c 1] [a 0] [i 4]
+--------- beginning of system
+09-03 16:43:40.260   319   319 D io_stats: !@ 179,0 r 456868 10087320 w 42919 416244 d 8207 615876 f 3233 4318 iot 662556 0 th 0 0 0 pt 0 inp 0 0 10845.543
+09-03 16:43:40.262   319   319 D io_stats: !@ Read_top(KB): adbd(18687) 92 logd(284) 20 storaged(594) 20
+09-03 16:43:40.262   319   319 D io_stats: !@ Write_top(KB): storaged(594) 168
+09-03 16:43:40.559   601  1639 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:40.562   601  1639 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:42.021   601  1639 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:42.023   601  1639 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:42.026   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:42.473   489   496 E BatteryDump: !@new_battery_dump : 4359,155,2000,168,86,391,0,Chg,Normal,Good,INBOX_WRL,90,Normal,0,0,9895,205,0,0x7f,0x8b,0x0f,0x5e,0x01,0x34,0x00,0x01,0,0,8393,4203,1,1,4834,4737,175,4373,0x02,0,1,0x130,0x80,0x56,143,0x3,0x0,0x0
+09-03 16:43:42.499   601  1226 D [SS]BattFunctions: [sendRemainingChargingTimeChangedIntent]remainingChargingTime:1949 ,mLastRemainingChargingTime:1961
+09-03 16:43:42.502   601  1226 D BatteryService: Sending ACTION_BATTERY_CHANGED: level:86, status:2, health:2, ac:false, usb:false, wireless:true, misc:0x0, charge_type:1, charger_type:0, voltage:4359, temperature:391, online:11, current_avg:153, hvc:false, capacity:280000, current_event:0x0, current_now:155, mcc:0, mcv:0, cc:310680, present:true, scale:100, technology:Li-ion
+09-03 16:43:42.510  1181  1181 D PowerUI : onReceive() Received Action =  com.samsung.server.BatteryService.action.SEC_BATTERY_REMAINING_CHARGING_TIME_CHANGED
+09-03 16:43:42.510  1181  1181 D PowerUI : onReceive() Unsupported Action 
+09-03 16:43:42.519  1181  1181 D PowerUI : onReceive() Received Action =  android.intent.action.BATTERY_CHANGED
+09-03 16:43:42.520  1181  1181 D PowerUI : plugged=true
+09-03 16:43:42.531  1181  1501 I PowerUI : maybeShowBatteryWarningV2 plugged=true bucket=1
+09-03 16:43:42.531  1181  1501 I PowerUI.NotificationHelper: cancelNotification  notificationID = 9009
+09-03 16:43:42.540  1181  1525 D SYSTEM_UI: BatteryIndicatorPresenter$3.onReceive(19): onReceive() Received Action =  android.intent.action.BATTERY_CHANGED
+09-03 16:43:42.541  1181  1525 D SYSTEM_UI: BatteryIndicatorPresenter$3.onReceive(103): level          86 --> 86
+09-03 16:43:42.542  1181  1525 D SYSTEM_UI: BatteryIndicatorPresenter$3.onReceive(130): status         2 --> 2
+09-03 16:43:42.546  1181  1181 I PowerUI : ACTION_BATTERY_CHANGED : mPlugType=4 mBatteryStatus=2
+09-03 16:43:42.546  1181  1181 I PowerUI : oldMisalign : false, curMisalign : false
+09-03 16:43:42.548   601   601 D AdaptiveBrightnessLongtermModelBuilder: Received android.intent.action.BATTERY_CHANGED
+09-03 16:43:42.561  1164  1164 I NfcWirelessCharge: chargeMode: 4, isWirelessCharging: true
+09-03 16:43:43.031  1109  1109 I Watchface: [ModelBattery] action:android.intent.action.BATTERY_CHANGED
+09-03 16:43:43.032  1109  1109 I Watchface: [ModelBattery] scale[100] level[86] status[2] isCharging[true] batteryLow[false]
+09-03 16:43:43.033  1109  1109 I Watchface: [ModelBattery] putAll to pendingUpdatedValues!! size:2
+09-03 16:43:43.089  1095  1095 I wpa_supplicant: Heartbeat 1063
+09-03 16:43:43.143   601  1639 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:43.147   601  1639 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:43.157   458   470 D WifiHAL : GetLinkStatCommand: zero radio case
+09-03 16:43:44.271   319   319 D io_stats: !@ 179,0 r 456868 10087320 w 42922 416256 d 8207 615876 f 3233 4318 iot 662568 0 th 0 0 0 pt 0 inp 0 0 10849.554
+09-03 16:43:44.273   319   319 D io_stats: !@ Write_top(KB): vendor.samsung.(489) 8 kworker/u4:2(18678) 4
+09-03 16:43:44.420   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:45.028   287   287 I hwservicemanager: getTransport: Cannot find entry android.hardware.memtrack@1.0::IMemtrack/default in either framework or device VINTF manifest.
+09-03 16:43:45.037   287   287 I hwservicemanager: getTransport: Cannot find entry android.hardware.memtrack@1.0::IMemtrack/default in either framework or device VINTF manifest.
+09-03 16:43:45.038 18690 18690 E HidlServiceManagement: Service android.hardware.memtrack@1.0::IMemtrack/default must be in VINTF manifest in order to register/get.
+09-03 16:43:45.038 18690 18690 E LegacySupport: Could not register service android.hardware.memtrack@1.0::IMemtrack/default (-2147483648).
+09-03 16:43:45.569  1489  1489 I adbd    : New TLS connection [fd=25]
+09-03 16:43:45.573  1489 18691 I adbd    : host-25: read thread spawning
+09-03 16:43:45.573  1489 18692 I adbd    : host-25: write thread spawning
+09-03 16:43:45.573  1489 18691 I adbd    : host-25: read failed: Success
+09-03 16:43:45.573  1489 18691 I adbd    : host-25: connection terminated: read failed
+09-03 16:43:45.574  1489  1489 I adbd    : BlockingConnectionAdapter(host-25): stopping
+09-03 16:43:45.576  1489  1489 I adbd    : BlockingConnectionAdapter(host-25): stopped
+09-03 16:43:45.576  1489  1489 I adbd    : BlockingConnectionAdapter(host-25): destructing
+09-03 16:43:45.577  1489  1489 I adbd    : BlockingConnectionAdapter(host-25): already stopped
+09-03 16:43:45.888   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:45.892   601  1639 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:45.894   601  1639 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:45.896   601  1639 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:45.898   601  1639 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:45.901   601  1639 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:46.297   458   470 D WifiHAL : GetLinkStatCommand: zero radio case
+09-03 16:43:46.368  1181  1525 D SYSTEM_UI: QuickpanelView$$ExternalSyntheticOutline0.m(13): wifi rssi : -60
+09-03 16:43:46.377  1181  1525 D SYSTEM_UI: WifiConnection$2.onReceive(42): wifi rssi level : 4
+09-03 16:43:46.378  1181  1181 D SYSTEM_UI: QuickpanelView$$ExternalSyntheticOutline0.m(13): updateMainIcon mMainIconResId= 2131233883
+09-03 16:43:47.040   601   806 E SSRM:DHMS_BASEFRAMEWORK: e = /sys/class/sec/sec-cp-thermistor/temperature: open failed: ENOENT (No such file or directory)
+09-03 16:43:47.049   601   806 I SSRM:Temperature: SIOP:: AP : 408 CP : -999 BLK : 428 BAT : 391
+09-03 16:43:48.065   514   514 I SurfaceFlinger: SFWD update time=10853349207544
+09-03 16:43:48.281   319   319 D io_stats: !@ 179,0 r 456869 10087352 w 42922 416256 d 8207 615876 f 3233 4318 iot 662572 0 th 0 0 0 pt 0 inp 0 0 10853.564
+09-03 16:43:48.282   319   319 D io_stats: !@ Read_top(KB): binder:505_2(505) 32
+09-03 16:43:49.161   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:49.163   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:49.165   601  2220 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:49.167   601  2220 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:49.480   458   470 D WifiHAL : GetLinkStatCommand: zero radio case
+09-03 16:43:50.037   287   287 I hwservicemanager: getTransport: Cannot find entry android.hardware.memtrack@1.0::IMemtrack/default in either framework or device VINTF manifest.
+09-03 16:43:50.045   287   287 I hwservicemanager: getTransport: Cannot find entry android.hardware.memtrack@1.0::IMemtrack/default in either framework or device VINTF manifest.
+09-03 16:43:50.046 18693 18693 E HidlServiceManagement: Service android.hardware.memtrack@1.0::IMemtrack/default must be in VINTF manifest in order to register/get.
+09-03 16:43:50.047 18693 18693 E LegacySupport: Could not register service android.hardware.memtrack@1.0::IMemtrack/default (-2147483648).
+09-03 16:43:50.213   601  2220 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:50.215   601  2220 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:50.217   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:51.425   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:51.428   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:51.432   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:51.438   601  2220 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:51.441   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:51.443   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:52.106  1489  1489 I adbd    : New TLS connection [fd=25]
+09-03 16:43:52.110  1489 18696 I adbd    : host-25: write thread spawning
+09-03 16:43:52.110  1489 18695 I adbd    : host-25: read thread spawning
+09-03 16:43:52.110  1489 18695 I adbd    : host-25: read failed: Success
+09-03 16:43:52.110  1489 18695 I adbd    : host-25: connection terminated: read failed
+09-03 16:43:52.111  1489  1489 I adbd    : BlockingConnectionAdapter(host-25): stopping
+09-03 16:43:52.113  1489  1489 I adbd    : BlockingConnectionAdapter(host-25): stopped
+09-03 16:43:52.114  1489  1489 I adbd    : BlockingConnectionAdapter(host-25): destructing
+09-03 16:43:52.114  1489  1489 I adbd    : BlockingConnectionAdapter(host-25): already stopped
+09-03 16:43:52.119   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:52.122   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:52.125   601  2220 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:52.127   601  2220 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:52.131   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:52.133   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:52.136   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:52.138   601  1639 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:52.546   489   496 E BatteryDump: !@new_battery_dump : 4361,157,2000,168,86,390,0,Chg,Normal,Good,INBOX_WRL,90,Normal,0,0,9895,205,0,0x95,0x8b,0x0f,0x5e,0x01,0x34,0x00,0x01,0,0,8403,4205,1,1,4829,4737,173,4361,0x02,0,1,0x130,0x80,0x56,143,0x3,0x0,0x0
+09-03 16:43:52.562   601  1226 D [SS]BattFunctions: [sendRemainingChargingTimeChangedIntent]remainingChargingTime:1943 ,mLastRemainingChargingTime:1949
+09-03 16:43:52.563   601  1226 D BatteryService: Sending ACTION_BATTERY_CHANGED: level:86, status:2, health:2, ac:false, usb:false, wireless:true, misc:0x0, charge_type:1, charger_type:0, voltage:4361, temperature:390, online:11, current_avg:153, hvc:false, capacity:280000, current_event:0x0, current_now:157, mcc:0, mcv:0, cc:311400, present:true, scale:100, technology:Li-ion
+09-03 16:43:52.569  1181  1181 D PowerUI : onReceive() Received Action =  com.samsung.server.BatteryService.action.SEC_BATTERY_REMAINING_CHARGING_TIME_CHANGED
+09-03 16:43:52.569  1181  1181 D PowerUI : onReceive() Unsupported Action 
+09-03 16:43:52.580  1181  1181 D PowerUI : onReceive() Received Action =  android.intent.action.BATTERY_CHANGED
+09-03 16:43:52.580  1181  1181 D PowerUI : plugged=true
+09-03 16:43:52.580  1181  1181 I PowerUI : ACTION_BATTERY_CHANGED : mPlugType=4 mBatteryStatus=2
+09-03 16:43:52.580  1181  1181 I PowerUI : oldMisalign : false, curMisalign : false
+09-03 16:43:52.581  1181  1420 I PowerUI : maybeShowBatteryWarningV2 plugged=true bucket=1
+09-03 16:43:52.582  1181  1420 I PowerUI.NotificationHelper: cancelNotification  notificationID = 9009
+09-03 16:43:52.586  1181  1525 D SYSTEM_UI: BatteryIndicatorPresenter$3.onReceive(19): onReceive() Received Action =  android.intent.action.BATTERY_CHANGED
+09-03 16:43:52.588  1181  1525 D SYSTEM_UI: BatteryIndicatorPresenter$3.onReceive(103): level          86 --> 86
+09-03 16:43:52.588  1181  1525 D SYSTEM_UI: BatteryIndicatorPresenter$3.onReceive(130): status         2 --> 2
+09-03 16:43:52.590   601   601 D AdaptiveBrightnessLongtermModelBuilder: Received android.intent.action.BATTERY_CHANGED
+09-03 16:43:52.599   458   470 D WifiHAL : GetLinkStatCommand: zero radio case
+09-03 16:43:52.615  1164  1164 I NfcWirelessCharge: chargeMode: 4, isWirelessCharging: true
+09-03 16:43:53.076  1109  1109 I Watchface: [ModelBattery] action:android.intent.action.BATTERY_CHANGED
+09-03 16:43:53.077  1109  1109 I Watchface: [ModelBattery] scale[100] level[86] status[2] isCharging[true] batteryLow[false]
+09-03 16:43:53.077  1109  1109 I Watchface: [ModelBattery] putAll to pendingUpdatedValues!! size:2
+09-03 16:43:53.090  1095  1095 I wpa_supplicant: Heartbeat 1064
+09-03 16:43:53.535   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:53.538   601  1639 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:53.541   601  1639 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:54.293   319   319 D io_stats: !@ 179,0 r 456869 10087352 w 42924 416264 d 8207 615876 f 3233 4318 iot 662580 0 th 0 0 0 pt 0 inp 0 0 10859.576
+09-03 16:43:55.068   287   287 I hwservicemanager: getTransport: Cannot find entry android.hardware.memtrack@1.0::IMemtrack/default in either framework or device VINTF manifest.
+09-03 16:43:55.076   287   287 I hwservicemanager: getTransport: Cannot find entry android.hardware.memtrack@1.0::IMemtrack/default in either framework or device VINTF manifest.
+09-03 16:43:55.077 18697 18697 E HidlServiceManagement: Service android.hardware.memtrack@1.0::IMemtrack/default must be in VINTF manifest in order to register/get.
+09-03 16:43:55.078 18697 18697 E LegacySupport: Could not register service android.hardware.memtrack@1.0::IMemtrack/default (-2147483648).
+09-03 16:43:55.460   601  1639 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:55.463   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:55.466   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:55.468   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:55.470   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:55.473   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:55.713   458   470 D WifiHAL : GetLinkStatCommand: zero radio case
+09-03 16:43:56.299   319   319 D io_stats: !@ Write_top(KB): vendor.samsung.(489) 8
+09-03 16:43:57.062   601   806 E SSRM:DHMS_BASEFRAMEWORK: e = /sys/class/sec/sec-cp-thermistor/temperature: open failed: ENOENT (No such file or directory)
+09-03 16:43:57.073   601   806 I SSRM:Temperature: SIOP:: AP : 408 CP : -999 BLK : 428 BAT : 390
+09-03 16:43:58.724   601  1639 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:58.727   601  1639 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:58.729   601  1639 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:43:58.830   458   470 D WifiHAL : GetLinkStatCommand: zero radio case
+09-03 16:43:59.746   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:00.116   287   287 I hwservicemanager: getTransport: Cannot find entry android.hardware.memtrack@1.0::IMemtrack/default in either framework or device VINTF manifest.
+09-03 16:44:00.135   287   287 I hwservicemanager: getTransport: Cannot find entry android.hardware.memtrack@1.0::IMemtrack/default in either framework or device VINTF manifest.
+09-03 16:44:00.136 18698 18698 E HidlServiceManagement: Service android.hardware.memtrack@1.0::IMemtrack/default must be in VINTF manifest in order to register/get.
+09-03 16:44:00.136 18698 18698 E LegacySupport: Could not register service android.hardware.memtrack@1.0::IMemtrack/default (-2147483648).
+09-03 16:44:01.960   458   470 D WifiHAL : GetLinkStatCommand: zero radio case
+09-03 16:44:02.593   601  1226 D [SS]BattFunctions: [sendRemainingChargingTimeChangedIntent]remainingChargingTime:1937 ,mLastRemainingChargingTime:1943
+09-03 16:44:02.598   489   496 E BatteryDump: !@new_battery_dump : 4363,157,2000,168,86,390,0,Chg,Normal,Good,INBOX_WRL,90,Normal,0,0,9875,205,0,0xa1,0x8b,0x0f,0x5e,0x01,0x34,0x00,0x01,0,0,8417,4206,1,1,4839,4742,175,4374,0x02,0,1,0x130,0x80,0x56,143,0x3,0x0,0x0
+09-03 16:44:02.601  1181  1181 D PowerUI : onReceive() Received Action =  com.samsung.server.BatteryService.action.SEC_BATTERY_REMAINING_CHARGING_TIME_CHANGED
+09-03 16:44:02.601  1181  1181 D PowerUI : onReceive() Unsupported Action 
+09-03 16:44:02.602   601  1226 D BatteryService: Sending ACTION_BATTERY_CHANGED: level:86, status:2, health:2, ac:false, usb:false, wireless:true, misc:0x0, charge_type:1, charger_type:0, voltage:4363, temperature:390, online:11, current_avg:154, hvc:false, capacity:280000, current_event:0x0, current_now:157, mcc:0, mcv:0, cc:311760, present:true, scale:100, technology:Li-ion
+09-03 16:44:02.609  1181  1181 D PowerUI : onReceive() Received Action =  android.intent.action.BATTERY_CHANGED
+09-03 16:44:02.610  1181  1181 D PowerUI : plugged=true
+09-03 16:44:02.610  1181  1181 I PowerUI : ACTION_BATTERY_CHANGED : mPlugType=4 mBatteryStatus=2
+09-03 16:44:02.610  1181  1181 I PowerUI : oldMisalign : false, curMisalign : false
+09-03 16:44:02.613  1181  1525 D SYSTEM_UI: BatteryIndicatorPresenter$3.onReceive(19): onReceive() Received Action =  android.intent.action.BATTERY_CHANGED
+09-03 16:44:02.614  1181  1501 I PowerUI : maybeShowBatteryWarningV2 plugged=true bucket=1
+09-03 16:44:02.614  1181  1501 I PowerUI.NotificationHelper: cancelNotification  notificationID = 9009
+09-03 16:44:02.615  1181  1525 D SYSTEM_UI: BatteryIndicatorPresenter$3.onReceive(103): level          86 --> 86
+09-03 16:44:02.616  1181  1525 D SYSTEM_UI: BatteryIndicatorPresenter$3.onReceive(130): status         2 --> 2
+09-03 16:44:02.616   601   601 D AdaptiveBrightnessLongtermModelBuilder: Received android.intent.action.BATTERY_CHANGED
+09-03 16:44:02.636  1164  1164 I NfcWirelessCharge: chargeMode: 4, isWirelessCharging: true
+09-03 16:44:02.994   601   667 E Watchdog: !@Sync: 362 heap: 53 / 61 FD: 762 [2026-09-03 16:44:02.992]
+09-03 16:44:03.092  1095  1095 I wpa_supplicant: Heartbeat 1065
+09-03 16:44:03.111  1109  1109 I Watchface: [ModelBattery] action:android.intent.action.BATTERY_CHANGED
+09-03 16:44:03.112  1109  1109 I Watchface: [ModelBattery] scale[100] level[86] status[2] isCharging[true] batteryLow[false]
+09-03 16:44:03.112  1109  1109 I Watchface: [ModelBattery] putAll to pendingUpdatedValues!! size:2
+09-03 16:44:04.315   319   319 D io_stats: !@ 179,0 r 456869 10087352 w 42926 416272 d 8207 615876 f 3233 4318 iot 662588 0 th 0 0 0 pt 0 inp 0 0 10869.598
+09-03 16:44:04.317   319   319 D io_stats: !@ Write_top(KB): vendor.samsung.(489) 8
+09-03 16:44:04.901   601  1639 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:04.904   601  1639 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:04.906   601  1639 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:04.908   601  1639 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:05.077   458   470 D WifiHAL : GetLinkStatCommand: zero radio case
+09-03 16:44:05.118   287   287 I hwservicemanager: getTransport: Cannot find entry android.hardware.memtrack@1.0::IMemtrack/default in either framework or device VINTF manifest.
+09-03 16:44:05.126   287   287 I hwservicemanager: getTransport: Cannot find entry android.hardware.memtrack@1.0::IMemtrack/default in either framework or device VINTF manifest.
+09-03 16:44:05.128 18699 18699 E HidlServiceManagement: Service android.hardware.memtrack@1.0::IMemtrack/default must be in VINTF manifest in order to register/get.
+09-03 16:44:05.129 18699 18699 E LegacySupport: Could not register service android.hardware.memtrack@1.0::IMemtrack/default (-2147483648).
+09-03 16:44:06.047   601  1639 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:06.050   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:06.055   601  2220 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:06.058   601  2220 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:06.060   601  2220 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:06.062   601  2220 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:07.136   601   806 E SSRM:DHMS_BASEFRAMEWORK: e = /sys/class/sec/sec-cp-thermistor/temperature: open failed: ENOENT (No such file or directory)
+09-03 16:44:07.146   601   806 I SSRM:Temperature: SIOP:: AP : 407 CP : -999 BLK : 428 BAT : 390
+09-03 16:44:07.303   601  2220 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:07.306   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:07.309   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:08.179   458   470 D WifiHAL : GetLinkStatCommand: zero radio case
+09-03 16:44:08.326   319   319 D io_stats: !@ 179,0 r 456870 10087356 w 42926 416272 d 8207 615876 f 3233 4318 iot 662592 0 th 0 0 0 pt 0 inp 0 0 10873.609
+09-03 16:44:08.327   319   319 D io_stats: !@ Read_top(KB): d.process.acore(1787) 4
+09-03 16:44:08.356   601  2220 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:08.359   601  2220 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:09.445   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:09.448   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:09.454   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:09.456   601  1639 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:10.141   287   287 I hwservicemanager: getTransport: Cannot find entry android.hardware.memtrack@1.0::IMemtrack/default in either framework or device VINTF manifest.
+09-03 16:44:10.149   287   287 I hwservicemanager: getTransport: Cannot find entry android.hardware.memtrack@1.0::IMemtrack/default in either framework or device VINTF manifest.
+09-03 16:44:10.150 18701 18701 E HidlServiceManagement: Service android.hardware.memtrack@1.0::IMemtrack/default must be in VINTF manifest in order to register/get.
+09-03 16:44:10.151 18701 18701 E LegacySupport: Could not register service android.hardware.memtrack@1.0::IMemtrack/default (-2147483648).
+09-03 16:44:10.333   319   319 D io_stats: !@ 179,0 r 456870 10087356 w 42928 416280 d 8207 615876 f 3233 4318 iot 662600 0 th 0 0 0 pt 0 inp 0 0 10875.616
+09-03 16:44:10.465   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:10.471   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:10.474   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:11.319   458   470 D WifiHAL : GetLinkStatCommand: zero radio case
+09-03 16:44:11.713   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:12.338   319   319 D io_stats: !@ Write_top(KB): kworker/u4:0(18278) 8
+09-03 16:44:12.596   489   496 E BatteryDump: !@new_battery_dump : 4364,156,2000,168,86,389,0,Chg,Normal,Good,INBOX_WRL,90,Normal,0,0,9875,205,0,0xaa,0x8b,0x0f,0x5e,0x01,0x34,0x00,0x01,0,0,8427,4207,1,1,4839,4742,175,4374,0x02,0,1,0x130,0x80,0x56,143,0x3,0x0,0x0
+09-03 16:44:12.610   601  1226 D [SS]BattFunctions: [sendRemainingChargingTimeChangedIntent]remainingChargingTime:1931 ,mLastRemainingChargingTime:1937
+09-03 16:44:12.613   601  1226 D BatteryService: Sending ACTION_BATTERY_CHANGED: level:86, status:2, health:2, ac:false, usb:false, wireless:true, misc:0x0, charge_type:1, charger_type:0, voltage:4364, temperature:389, online:11, current_avg:154, hvc:false, capacity:280000, current_event:0x0, current_now:156, mcc:0, mcv:0, cc:312120, present:true, scale:100, technology:Li-ion
+09-03 16:44:12.620  1181  1181 D PowerUI : onReceive() Received Action =  com.samsung.server.BatteryService.action.SEC_BATTERY_REMAINING_CHARGING_TIME_CHANGED
+09-03 16:44:12.620  1181  1181 D PowerUI : onReceive() Unsupported Action 
+09-03 16:44:12.637  1181  1181 D PowerUI : onReceive() Received Action =  android.intent.action.BATTERY_CHANGED
+09-03 16:44:12.647  1181  1181 D PowerUI : plugged=true
+09-03 16:44:12.647  1181  1420 I PowerUI : maybeShowBatteryWarningV2 plugged=true bucket=1
+09-03 16:44:12.648  1181  1420 I PowerUI.NotificationHelper: cancelNotification  notificationID = 9009
+09-03 16:44:12.649  1181  1181 I PowerUI : ACTION_BATTERY_CHANGED : mPlugType=4 mBatteryStatus=2
+09-03 16:44:12.649  1181  1181 I PowerUI : oldMisalign : false, curMisalign : false
+09-03 16:44:12.654  1181  1525 D SYSTEM_UI: BatteryIndicatorPresenter$3.onReceive(19): onReceive() Received Action =  android.intent.action.BATTERY_CHANGED
+09-03 16:44:12.655  1181  1525 D SYSTEM_UI: BatteryIndicatorPresenter$3.onReceive(103): level          86 --> 86
+09-03 16:44:12.655  1181  1525 D SYSTEM_UI: BatteryIndicatorPresenter$3.onReceive(130): status         2 --> 2
+09-03 16:44:12.657   601   601 D AdaptiveBrightnessLongtermModelBuilder: Received android.intent.action.BATTERY_CHANGED
+09-03 16:44:12.668  1164  1164 I NfcWirelessCharge: chargeMode: 4, isWirelessCharging: true
+09-03 16:44:12.869   601  2220 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:12.872   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:12.874   601  2220 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:12.877   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:12.879   601  2220 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:12.882   601  2220 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:13.095  1095  1095 I wpa_supplicant: Heartbeat 1066
+09-03 16:44:13.133  1109  1109 I Watchface: [ModelBattery] action:android.intent.action.BATTERY_CHANGED
+09-03 16:44:13.133  1109  1109 I Watchface: [ModelBattery] scale[100] level[86] status[2] isCharging[true] batteryLow[false]
+09-03 16:44:13.134  1109  1109 I Watchface: [ModelBattery] putAll to pendingUpdatedValues!! size:2
+09-03 16:44:14.143   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:14.145   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:14.186   601   670 I ProcessStatsService: Pruning old procstats: /data/system/procstats/state-v2-2026-09-01-04-04-48.bin
+09-03 16:44:14.341   319   319 D io_stats: !@ 179,0 r 456879 10087432 w 42932 416460 d 8207 615876 f 3233 4318 iot 662632 0 th 0 0 0 pt 0 inp 0 0 10879.625
+09-03 16:44:14.476   458   470 D WifiHAL : GetLinkStatCommand: zero radio case
+09-03 16:44:14.555  1181  1525 D SYSTEM_UI: QuickpanelView$$ExternalSyntheticOutline0.m(13): wifi rssi : -64
+09-03 16:44:14.557  1181  1525 D SYSTEM_UI: WifiConnection$2.onReceive(42): wifi rssi level : 3
+09-03 16:44:14.558  1181  1181 D SYSTEM_UI: QuickpanelView$$ExternalSyntheticOutline0.m(13): updateMainIcon mMainIconResId= 2131233882
+09-03 16:44:15.119  1489  1489 I adbd    : New TLS connection [fd=25]
+09-03 16:44:15.122  1489 18704 I adbd    : host-25: write thread spawning
+09-03 16:44:15.122  1489 18703 I adbd    : host-25: read thread spawning
+09-03 16:44:15.123  1489 18703 I adbd    : host-25: read failed: Success
+09-03 16:44:15.123  1489 18703 I adbd    : host-25: connection terminated: read failed
+09-03 16:44:15.123  1489  1489 I adbd    : BlockingConnectionAdapter(host-25): stopping
+09-03 16:44:15.124  1489  1489 I adbd    : BlockingConnectionAdapter(host-25): stopped
+09-03 16:44:15.124  1489  1489 I adbd    : BlockingConnectionAdapter(host-25): destructing
+09-03 16:44:15.124  1489  1489 I adbd    : BlockingConnectionAdapter(host-25): already stopped
+09-03 16:44:15.181   287   287 I hwservicemanager: getTransport: Cannot find entry android.hardware.memtrack@1.0::IMemtrack/default in either framework or device VINTF manifest.
+09-03 16:44:15.190   287   287 I hwservicemanager: getTransport: Cannot find entry android.hardware.memtrack@1.0::IMemtrack/default in either framework or device VINTF manifest.
+09-03 16:44:15.191 18702 18702 E HidlServiceManagement: Service android.hardware.memtrack@1.0::IMemtrack/default must be in VINTF manifest in order to register/get.
+09-03 16:44:15.191 18702 18702 E LegacySupport: Could not register service android.hardware.memtrack@1.0::IMemtrack/default (-2147483648).
+09-03 16:44:15.763   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:15.767   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:15.770   601  2220 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:15.772   601  2220 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:15.775   601  2220 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:15.777   601  2220 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:15.779   601  2220 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:15.781   601  2220 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:16.347   319   319 D io_stats: !@ Read_top(KB): system_server(601) 76
+09-03 16:44:16.348   319   319 D io_stats: !@ Write_top(KB): system_server(601) 172 vendor.samsung.(489) 8
+09-03 16:44:16.833   601  2220 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:17.207   601   806 E SSRM:DHMS_BASEFRAMEWORK: e = /sys/class/sec/sec-cp-thermistor/temperature: open failed: ENOENT (No such file or directory)
+09-03 16:44:17.217   601   806 I SSRM:Temperature: SIOP:: AP : 407 CP : -999 BLK : 428 BAT : 389
+09-03 16:44:17.651   458   470 D WifiHAL : GetLinkStatCommand: zero radio case
+09-03 16:44:18.067   514   514 I SurfaceFlinger: SFWD update time=10883351227022
+09-03 16:44:18.353   319   319 D io_stats: !@ 179,0 r 456881 10087440 w 42932 416460 d 8207 615876 f 3233 4318 iot 662640 0 th 0 0 0 pt 0 inp 0 0 10883.636
+09-03 16:44:18.821   601  2220 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:20.186   287   287 I hwservicemanager: getTransport: Cannot find entry android.hardware.memtrack@1.0::IMemtrack/default in either framework or device VINTF manifest.
+09-03 16:44:20.195   287   287 I hwservicemanager: getTransport: Cannot find entry android.hardware.memtrack@1.0::IMemtrack/default in either framework or device VINTF manifest.
+09-03 16:44:20.196 18705 18705 E HidlServiceManagement: Service android.hardware.memtrack@1.0::IMemtrack/default must be in VINTF manifest in order to register/get.
+09-03 16:44:20.196 18705 18705 E LegacySupport: Could not register service android.hardware.memtrack@1.0::IMemtrack/default (-2147483648).
+09-03 16:44:20.357   319   319 D io_stats: !@ 179,0 r 456882 10087444 w 42936 416524 d 8207 615876 f 3233 4318 iot 662652 0 th 0 0 0 pt 0 inp 0 0 10885.640
+09-03 16:44:20.359   319   319 D io_stats: !@ Read_top(KB): .gms.persistent(1288) 8 system_server(601) 4
+09-03 16:44:20.359   319   319 D io_stats: !@ Write_top(KB): system_server(601) 64
+09-03 16:44:20.641   601  2220 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:20.646   601  1226 E BatteryStatsService: Invalid uid for waking network packet: -1
+09-03 16:44:20.753   458   470 D WifiHAL : GetLinkStatCommand: zero radio case

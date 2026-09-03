@@ -12,7 +12,7 @@ from pydantic import BaseModel, Field
 
 # Ensure server root is in path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-from emergency_service import format_emergency_email, send_smtp_email, DEFAULT_RECIPIENT
+from emergency_service import format_emergency_email, send_smtp_email, get_smtp_config
 
 router = APIRouter(prefix="/emergency", tags=["emergency"])
 
@@ -43,14 +43,16 @@ class EmergencyResponse(BaseModel):
 @router.post("/", response_model=EmergencyResponse)
 def dispatch_emergency_alert(payload: EmergencyRequest):
     data = payload.model_dump()
-    recipients = data.get("recipients") or [DEFAULT_RECIPIENT]
+    config = get_smtp_config()
+    recipients = data.get("recipients") or [config["recipient"]]
     
     subject, body = format_emergency_email(data)
     result = send_smtp_email(recipients, subject, body)
     
     if not result.get("success"):
+        status_code = 503 if result.get("mode") == "SMTP_UNCONFIGURED" else 500
         raise HTTPException(
-            status_code=500,
+            status_code=status_code,
             detail=result.get("error", "Emergency email dispatch failed")
         )
 

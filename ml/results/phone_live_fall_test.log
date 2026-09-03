@@ -1,0 +1,268 @@
+--------- beginning of main
+09-03 16:43:38.753 14246 14269 I adbd    : opening control endpoint /dev/usb-ffs/adb/ep0
+09-03 16:43:38.755 14246 14269 I adbd    : UsbFfsConnection constructed
+09-03 16:43:38.757 14246 27727 I adbd    : UsbFfs-monitor thread spawned
+09-03 16:43:39.081  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: wakeup_count-
+09-03 16:43:39.081  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: mSuspendCounter+
+09-03 16:43:39.081  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: mSuspendCounter-
+09-03 16:43:39.082  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: write mem+
+09-03 16:43:39.167  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: write mem-
+09-03 16:43:39.168  4599  4612 I BatteryStatsService: In wakeup_callback: suspend aborted
+--------- beginning of system
+09-03 16:43:39.213  4067  4067 I io_stats: !@   8,0 r 1745004 70731432 w 136490 2357204 d 72654 2146084 f 18189 25198 iot 488196 424703 th 51200 51200 40144 pt 192 inp 0 0 9810.975
+09-03 16:43:39.369  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: wakeup_count+
+09-03 16:43:39.483  4349  4826 I bauth_FPBAuthService: pcf : 0x1012, 0 ,1 ,0 ,0 ,0 ,0, 5.1.0.6
+09-03 16:43:39.483  4349  4826 I bauth_FPBAuthService: thread id : 1, preenroll_flag : 0, nd cnt : 0, cso : 0, et : 0
+09-03 16:43:39.484  4349  4826 I bauth_FPBAuthService: FPBAuthService, 11619
+09-03 16:43:39.656  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: wakeup_count-
+09-03 16:43:39.657  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: mSuspendCounter+
+09-03 16:43:39.657  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: mSuspendCounter-
+09-03 16:43:39.657  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: write mem+
+09-03 16:43:50.816  4599  4714 D SamsungAlarmManager: Expired : 65536
+09-03 16:43:50.817  4599  4714 I SamsungAlarmManager: setLocked to kernel - T:2 / 20260903T164413, set=11313929, now=11291380
+09-03 16:43:50.817  4599  4714 I SamsungAlarmManager: setLocked to kernel - T:3 / 20260903T164400, set=11300563, now=11291380
+09-03 16:43:50.847  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: write mem-
+09-03 16:43:50.848  4599  4612 I BatteryStatsService: In wakeup_callback: resumed from suspend
+09-03 16:43:50.901 14246 27727 W adbd    : timed out while waiting for FUNCTIONFS_BIND, trying again
+09-03 16:43:50.901 14246 27727 I adbd    : UsbFfs: connection terminated: monitor thread finished
+09-03 16:43:50.902 14246 14246 I adbd    : UsbFfs: already offline
+09-03 16:43:50.902 14246 14246 I adbd    : destroying transport UsbFfs
+09-03 16:43:50.902 14246 14246 I adbd    : UsbFfsConnection being destroyed
+09-03 16:43:50.933 14246 14269 I adbd    : opening control endpoint /dev/usb-ffs/adb/ep0
+09-03 16:43:50.937 14246 14269 I adbd    : UsbFfsConnection constructed
+09-03 16:43:50.939 14246 27729 I adbd    : UsbFfs-monitor thread spawned
+09-03 16:43:50.951  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: wakeup_count+
+09-03 16:43:51.311  4349  4826 I bauth_FPBAuthService: pcf : 0x1012, 0 ,1 ,0 ,0 ,0 ,0, 5.1.0.6
+09-03 16:43:51.311  4349  4826 I bauth_FPBAuthService: thread id : 1, preenroll_flag : 0, nd cnt : 0, cso : 0, et : 0
+09-03 16:43:51.312  4349  4826 I bauth_FPBAuthService: FPBAuthService, 11619
+09-03 16:43:51.763  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: wakeup_count-
+09-03 16:43:51.764  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: mSuspendCounter+
+09-03 16:43:51.764  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: mSuspendCounter-
+09-03 16:43:51.764  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: write mem+
+09-03 16:44:03.733  4067  4067 I io_stats: !@   8,0 r 1745004 70731432 w 136499 2357276 d 72657 2146100 f 18199 25210 iot 488228 424710 th 51200 51200 40144 pt 192 inp 0 0 9813.081
+09-03 16:44:03.734  4599  4714 D SamsungAlarmManager: Expired : 65544
+09-03 16:44:03.734  4599  4714 I SamsungAlarmManager: setLocked to kernel - T:2 / 20260903T164413, set=11313929, now=11304298
+09-03 16:44:03.735  4599  4714 E AlarmManager: Set nextNonWakeup as mNextNonWakeupDeliveryTime=12654297 , orig nextNonWakeup=0
+09-03 16:44:03.735  4599  4714 I SamsungAlarmManager: setLocked to kernel - T:3 / 20260903T170633, set=12654297, now=11304298
+09-03 16:44:03.757  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: write mem-
+09-03 16:44:03.758  4599  4612 I BatteryStatsService: In wakeup_callback: resumed from suspend
+09-03 16:44:03.856 14246 27729 W adbd    : timed out while waiting for FUNCTIONFS_BIND, trying again
+09-03 16:44:03.856 14246 27729 I adbd    : UsbFfs: connection terminated: monitor thread finished
+09-03 16:44:03.856 14246 14246 I adbd    : UsbFfs: already offline
+09-03 16:44:03.857 14246 14246 I adbd    : destroying transport UsbFfs
+09-03 16:44:03.857 14246 14246 I adbd    : UsbFfsConnection being destroyed
+09-03 16:44:03.858  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: wakeup_count+
+09-03 16:44:03.900 14246 14269 I adbd    : opening control endpoint /dev/usb-ffs/adb/ep0
+09-03 16:44:03.901  4349  4826 I bauth_FPBAuthService: pcf : 0x1012, 0 ,1 ,0 ,0 ,0 ,0, 5.1.0.6
+09-03 16:44:03.901  4349  4826 I bauth_FPBAuthService: thread id : 1, preenroll_flag : 0, nd cnt : 0, cso : 0, et : 0
+09-03 16:44:03.902  4349  4826 I bauth_FPBAuthService: FPBAuthService, 11619
+09-03 16:44:03.903 14246 14269 I adbd    : UsbFfsConnection constructed
+09-03 16:44:03.906 14246 27731 I adbd    : UsbFfs-monitor thread spawned
+09-03 16:44:04.057  4863  4863 I wpa_supplicant: Heartbeat 947
+09-03 16:44:04.102 27645 27683 I ndroid.game.go: Waiting for a blocking GC ProfileSaver
+09-03 16:44:04.103  4599  4829 D PkgPredictorService-NapPreloadController: [ML] Sent pkg = com.suman.mobilesensorlogger uid: 0 type: booster
+09-03 16:44:04.152 27645 27683 I ndroid.game.go: WaitForGcToComplete blocked ProfileSaver on AddRemoveAppImageSpace for 49.838ms
+09-03 16:44:04.167 27645 27658 I ndroid.game.go: WaitForGcToComplete blocked RunEmptyCheckpoint on ProfileSaver for 7.233ms
+09-03 16:44:04.177 27664 27689 I sungpositionin: Waiting for a blocking GC ProfileSaver
+09-03 16:44:04.195 27664 27689 I sungpositionin: WaitForGcToComplete blocked ProfileSaver on AddRemoveAppImageSpace for 17.456ms
+09-03 16:44:04.211 27664 27677 I sungpositionin: WaitForGcToComplete blocked RunEmptyCheckpoint on ProfileSaver for 16.370ms
+09-03 16:44:04.663  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: wakeup_count-
+09-03 16:44:04.664  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: mSuspendCounter+
+09-03 16:44:04.664  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: mSuspendCounter-
+09-03 16:44:04.664  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: write mem+
+09-03 16:44:13.131  4349  4826 I bauth_FPBAuthService: pcf : 0x1012, 0 ,1 ,0 ,0 ,0 ,0, 5.1.0.6
+09-03 16:44:13.131  4349  4826 I bauth_FPBAuthService: thread id : 1, preenroll_flag : 0, nd cnt : 0, cso : 0, et : 0
+09-03 16:44:13.131  4349  4826 I bauth_FPBAuthService: FPBAuthService, 11619
+09-03 16:44:13.134  4236  4236 I SurfaceFlinger: SFWD update time=9814375668249
+09-03 16:44:13.138  4599  4714 D SamsungAlarmManager: Expired : 65536
+09-03 16:44:13.139  4599  4714 I SamsungAlarmManager: setLocked to kernel - T:2 / 20260903T164413, set=11313929, now=11313702
+09-03 16:44:13.139  4599  4714 E AlarmManager: Set nextNonWakeup as mNextNonWakeupDeliveryTime=12654297 , orig nextNonWakeup=0
+09-03 16:44:13.139  4599  4714 I SamsungAlarmManager: setLocked to kernel - T:3 / 20260903T170633, set=12654297, now=11313703
+09-03 16:44:13.168  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: write mem-
+09-03 16:44:13.168  4599  7365 I BatteryStatsService: In wakeup_callback: resumed from suspend
+09-03 16:44:13.203  4599  4829 D PkgPredictorService-NapPreloadController: [ML] Sent pkg = com.google.android.gm uid: 0 type: booster
+09-03 16:44:13.203  4599  4635 D BatteryExternalStatsWorker: update stats : wifi-data: inactive (2)
+09-03 16:44:13.204  4599  4635 D BatteryExternalStatsWorker: WifiActivityEnergyInfo was updated
+09-03 16:44:13.211  4599  4635 D BatteryExternalStatsWorker: done updateExternalStatsLocked
+09-03 16:44:13.270  4599  4635 D BatteryExternalStatsWorker: update stats : wifi-data: active (2)
+09-03 16:44:13.271  4599  4635 D BatteryExternalStatsWorker: WifiActivityEnergyInfo was updated
+09-03 16:44:13.271  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: wakeup_count+
+09-03 16:44:13.283  4599  4635 D BatteryExternalStatsWorker: done updateExternalStatsLocked
+09-03 16:44:13.344 14246 27731 W adbd    : timed out while waiting for FUNCTIONFS_BIND, trying again
+09-03 16:44:13.344 14246 27731 I adbd    : UsbFfs: connection terminated: monitor thread finished
+09-03 16:44:13.346 14246 14246 I adbd    : UsbFfs: already offline
+09-03 16:44:13.346 14246 14246 I adbd    : destroying transport UsbFfs
+09-03 16:44:13.347 14246 14246 I adbd    : UsbFfsConnection being destroyed
+09-03 16:44:13.366  4599  4714 D SamsungAlarmManager: Expired : 4
+09-03 16:44:13.367  4599  4714 V SamsungAlarmManager: Sending to uid : 1000 L=df89a3d:TIME_TICK alarm=Alarm{f04b978 type 3 when 11300563 android}
+09-03 16:44:13.370  4599  4714 D SamsungAlarmManager: setExact (T:3/F:1/AC:false) 20260903T164500 now=11313933 - CU:1000/CP:4599/L:df89a3d:TIME_TICK
+09-03 16:44:13.370  4599  4714 I SamsungAlarmManager: setLocked to kernel - T:2 / 20260903T165009, set=11670225, now=11313934
+09-03 16:44:13.371  4599  4714 I SamsungAlarmManager: setLocked to kernel - T:3 / 20260903T164500, set=11360564, now=11313934
+09-03 16:44:13.376  4924  5494 D QSClockBellTower: onReceive(android.intent.action.TIME_TICK) mTimeZoneString:null
+09-03 16:44:13.376  4924  4924 D KeyguardUpdateMonitor: received broadcast android.intent.action.TIME_TICK
+09-03 16:44:13.380  4924  4924 D QSClockBellTower: He is ready to ring the bell. (((QSClockBellSound - TimeText:16:44, TimeContentDescription:16:44, DateText:Thu, 3 September, ShortDateText:Thu, 3 Sep, Demofalse)))
+09-03 16:44:13.380  4599  4714 V SamsungAlarmManager: Sending to uid : 10094 action=com.google.android.gms.gcm.TRIGGER_IDLE alarm=Alarm{55b851 type 3 when 11276856 com.google.android.gms}
+09-03 16:44:13.381  4924  4924 D QSClockHomeIndicatorView: Home Indicator status_bar_clock notifyTimeChanged(QSClockBellSound - TimeText:16:44, TimeContentDescription:16:44, DateText:Thu, 3 September, ShortDateText:Thu, 3 Sep, Demofalse) ClockVisibleByPolicy:true, ClockVisibleByUser:true, visible?false, parent:android.widget.LinearLayout{56badbb V.E...... ......ID 0,0-0,83 #7f0a037c app:id/left_clock_container}
+09-03 16:44:13.382  4924  4924 D QSClockBellTower: Everyone heard the bell. run(currentTime:1788434053377,   getTime():Thu Sep 03 16:44:13 GMT+05:30 2026,   getTimeZone():libcore.util.ZoneInfo[id="Asia/Kolkata",mRawOffset=19800000,mEarliestRawOffset=21208000,mUseDst=false,mDstSavings=0,transitions=7])
+09-03 16:44:13.382  4924  4924 D KeyguardUpdateMonitor: handleTimeUpdate
+09-03 16:44:13.383  4924  5494 D QSClockBellTower: onReceive(android.intent.action.TIME_TICK) mTimeZoneString:null
+09-03 16:44:13.383  4924  4924 D FaceWidgetPagesController: onTimeChanged()
+09-03 16:44:13.384  4599  4714 D ActivityManager: Received BROADCAST intent 0x12beca2 Key{broadcastIntent pkg=com.google.android.gms/com.google.android.gms.scheduler intent=act=com.google.android.gms.gcm.TRIGGER_IDLE pkg=com.google.android.gms flags=0x44000000 u=0} requestCode=0 sent=0 from uid 1000
+09-03 16:44:13.387  4599  4714 V SamsungAlarmManager: Sending to uid : 10094 action=com.google.android.location.ALARM_WAKEUP_ACTIVITY_DETECTION alarm=Alarm{d2769b7 type 2 when 11313929 com.google.android.gms}
+09-03 16:44:13.389  4599  4714 D ActivityManager: Received BROADCAST intent 0x973315a Key{broadcastIntent pkg=com.google.android.gms/com.google.android.gms.location_base intent=act=com.google.android.location.ALARM_WAKEUP_ACTIVITY_DETECTION pkg=com.google.android.gms flags=0x4000000 u=0} requestCode=0 sent=0 from uid 1000
+09-03 16:44:13.398  4599  4714 I SamsungAlarmManager: setLocked to kernel - T:2 / 20260903T165009, set=11670225, now=11313962
+09-03 16:44:13.399  4599  4714 I SamsungAlarmManager: setLocked to kernel - T:3 / 20260903T164500, set=11360564, now=11313962
+09-03 16:44:13.400  4599  4599 V AlarmManager: com.android.server.AlarmManagerServiceExt@98a0f9e
+09-03 16:44:13.400  4599  4599 V AlarmManagerEXT: <AppSync3 Whitelist>
+09-03 16:44:13.400  4599  4599 V AlarmManagerEXT: (AppSync) ### 0 added ###
+09-03 16:44:13.403 14246 14269 I adbd    : opening control endpoint /dev/usb-ffs/adb/ep0
+09-03 16:44:13.405 14246 14269 I adbd    : UsbFfsConnection constructed
+09-03 16:44:13.407  4599  4612 D SamsungAlarmManager: setExact (T:3/F:9/AC:false) 20260903T194914 now=11313970 - CU:1000/CP:4599/L:ba12a:StatsCompanionService.anomaly
+09-03 16:44:13.407  4599  4612 I SamsungAlarmManager: setLocked to kernel - T:2 / 20260903T165009, set=11670225, now=11313970
+09-03 16:44:13.407  4599  4612 I SamsungAlarmManager: setLocked to kernel - T:3 / 20260903T164500, set=11360564, now=11313971
+09-03 16:44:13.408 14246 27737 I adbd    : UsbFfs-monitor thread spawned
+09-03 16:44:13.410  4599  4612 D SensorService: Calling batch handle==1 flags=0 rate=20000000 timeout== 0
+09-03 16:44:13.411  4175  4175 I SensorsHub: batch: handle=1 period=20000000 timeout=0
+09-03 16:44:13.412 13282 27736 D SensorManager: registerListener :: 1, LSM6DSL Accelerometer, 20000, 0, 
+09-03 16:44:13.427  4924  4924 D QSClockBellTower: He is ready to ring the bell. (((QSClockBellSound - TimeText:16:44, TimeContentDescription:16:44, DateText:Thu, 3 September, ShortDateText:Thu, 3 Sep, Demofalse)))
+09-03 16:44:13.427  4924  4924 D QSClockHomeIndicatorView: Home Indicator status_bar_clock notifyTimeChanged(QSClockBellSound - TimeText:16:44, TimeContentDescription:16:44, DateText:Thu, 3 September, ShortDateText:Thu, 3 Sep, Demofalse) ClockVisibleByPolicy:true, ClockVisibleByUser:true, visible?false, parent:android.widget.LinearLayout{56badbb V.E...... ......ID 0,0-0,83 #7f0a037c app:id/left_clock_container}
+09-03 16:44:13.428  4924  4924 D QSClockBellTower: Everyone heard the bell. run(currentTime:1788434053427,   getTime():Thu Sep 03 16:44:13 GMT+05:30 2026,   getTimeZone():libcore.util.ZoneInfo[id="Asia/Kolkata",mRawOffset=19800000,mEarliestRawOffset=21208000,mUseDst=false,mDstSavings=0,transitions=7])
+09-03 16:44:13.430  4924  4924 I DigitalHorizontalClockView_LOCK_SCREEN: updatePaletteItemTransition : paletteItem = SOLID color : FFF4F4F4, animation = false
+09-03 16:44:13.462  4599  4776 D DeviceStorageMonitorService: check() STORAGE TOTAL > 64G
+09-03 16:44:13.467  4599  4776 W DeviceStorageMonitorService: updateBroadcasts(/data) oldLevel:0, newLevel:0, seq:1
+09-03 16:44:13.469  4599  4776 D DeviceStorageMonitorService: Available File Node Number is [13216698]
+09-03 16:44:13.469  4599  4776 W DeviceStorageMonitorService: updateBroadcasts_filenode(/data) fn_oldLevel:0, fn_newLevel:0, seq:1
+09-03 16:44:13.798  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: wakeup_count-
+09-03 16:44:13.799  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: mSuspendCounter+
+09-03 16:44:13.847  4067  4067 I io_stats: !@   8,0 r 1745016 70731956 w 136505 2357320 d 72660 2146116 f 18204 25216 iot 488260 424720 th 51200 51200 40144 pt 192 inp 0 0 9815.087
+09-03 16:44:14.132  4349  4826 I bauth_FPBAuthService: pcf : 0x1012, 0 ,1 ,0 ,0 ,0 ,0, 5.1.0.6
+09-03 16:44:14.132  4349  4826 I bauth_FPBAuthService: thread id : 1, preenroll_flag : 0, nd cnt : 0, cso : 0, et : 0
+09-03 16:44:14.133  4349  4826 I bauth_FPBAuthService: FPBAuthService, 11619
+09-03 16:44:14.204  4599  4829 D PkgPredictorService-NapPreloadController: [ML] Sent pkg = com.phonepe.app uid: 0 type: booster
+09-03 16:44:14.410 14246 27737 W adbd    : timed out while waiting for FUNCTIONFS_BIND, trying again
+09-03 16:44:14.411 14246 27737 I adbd    : UsbFfs: connection terminated: monitor thread finished
+09-03 16:44:14.411 14246 14246 I adbd    : UsbFfs: already offline
+09-03 16:44:14.412 14246 14246 I adbd    : destroying transport UsbFfs
+09-03 16:44:14.412 14246 14246 I adbd    : UsbFfsConnection being destroyed
+09-03 16:44:14.455 14246 14269 I adbd    : opening control endpoint /dev/usb-ffs/adb/ep0
+09-03 16:44:14.459 14246 14269 I adbd    : UsbFfsConnection constructed
+09-03 16:44:14.462 14246 27738 I adbd    : UsbFfs-monitor thread spawned
+09-03 16:44:15.133  4349  4826 I bauth_FPBAuthService: pcf : 0x1012, 0 ,1 ,0 ,0 ,0 ,0, 5.1.0.6
+09-03 16:44:15.133  4349  4826 I bauth_FPBAuthService: thread id : 1, preenroll_flag : 0, nd cnt : 0, cso : 0, et : 0
+09-03 16:44:15.133  4349  4826 I bauth_FPBAuthService: FPBAuthService, 11619
+09-03 16:44:15.159 14246 14246 I adbd    : New TLS connection [fd=31]
+09-03 16:44:15.163 14246 27739 I adbd    : host-31: read thread spawning
+09-03 16:44:15.163 14246 14246 I adbd    : host-31: already offline
+09-03 16:44:15.164 14246 27740 I adbd    : host-31: write thread spawning
+09-03 16:44:15.204  4599  4829 D PkgPredictorService-NapPreloadController: [ML] Sent pkg = com.samsung.android.dialer uid: 0 type: booster
+09-03 16:44:15.463 14246 27738 W adbd    : timed out while waiting for FUNCTIONFS_BIND, trying again
+09-03 16:44:15.463 14246 27738 I adbd    : UsbFfs: connection terminated: monitor thread finished
+09-03 16:44:15.464 14246 14246 I adbd    : UsbFfs: already offline
+09-03 16:44:15.464 14246 14246 I adbd    : destroying transport UsbFfs
+09-03 16:44:15.465 14246 14246 I adbd    : UsbFfsConnection being destroyed
+09-03 16:44:15.499 14246 14269 I adbd    : opening control endpoint /dev/usb-ffs/adb/ep0
+09-03 16:44:15.503 14246 14269 I adbd    : UsbFfsConnection constructed
+09-03 16:44:15.505 14246 27741 I adbd    : UsbFfs-monitor thread spawned
+09-03 16:44:15.818 14246 27739 I adbd    : host-31: Received STLS packet. Stopping read thread.
+09-03 16:44:15.831 14246 27742 I adbd    : [server]: Initializing adbwifi TlsConnection
+09-03 16:44:15.834 14246 27742 I adbd    : adbd_auth: loading keys from /data/misc/adb/adb_keys
+09-03 16:44:15.835 14246 27742 I adbd    : fingerprint=[70064161A8CCED6C8CFEED84F8E2DCE266276EB49CDDAA9F1056E7DCAD45C468]
+09-03 16:44:15.835 14246 27742 E adbd    : Invalid base64 key 
+09-03 16:44:15.835 14246 27742 I adbd    : [server]: Starting adbwifi tls handshake
+09-03 16:44:16.134  4349  4826 I bauth_FPBAuthService: pcf : 0x1012, 0 ,1 ,0 ,0 ,0 ,0, 5.1.0.6
+09-03 16:44:16.134  4349  4826 I bauth_FPBAuthService: thread id : 1, preenroll_flag : 0, nd cnt : 0, cso : 0, et : 0
+09-03 16:44:16.134  4349  4826 I bauth_FPBAuthService: FPBAuthService, 11619
+09-03 16:44:16.147 14246 27742 I adbd    : adbd_auth: loading keys from /data/misc/adb/adb_keys
+09-03 16:44:16.148 14246 27742 I adbd    : Matched auth_key=QAAAAIGyDwl/cjlFbYY84WQZ4Wikmnh3GAcD+QkfGePqjKmsMB6Ef/NlKkTAA4N99poR6xCtFpYwhRxmG5r2YrtTLobAMhRQ8LACUtFrgP/vt7Y4TRnUliosTQsx0kEA4nQK7iIs6weHafVuRX4bNxLeXeIPSjCxUmm700i+ME9qwzG5f4A4PaBya4/6bZrjPjyLa9OOv1hlYZKotjr4nicuHlMKXY95CbaLIDO1XIXdxqJTcguWpp45RXPPbbpl8dD3vXvjyPyCHSD5KuvW+9/JROAG3s7487qdA2OA748wqoiHPYcX6FdbyWnVHZhrKxzTmlQELdfHO+wqtYv64VfIhL8dzy3CZTFiNapFOqb4YOTXNygCBxhG5hBaz06XtI3KdyRBzblln5sLVS6z0jm8vcw/eO4CKDEtCglxYK4UmR7t1BXD9/pZCjE+AK9EgEEr6hLiWMBlxYvr5Mc08jyFDqOFH7YTCDvQpjXPv0E91hoHkGAnz/MjgWdCX710vdv7zoYyHfhStW/MLc9m6eU87HmFaZZQDdiSzbeVGHFR1Zz3RANAf51nDsvt3PHsQbRvJbl6x9Qc+J2HmPDGFjKd9MXktYSq8TOHbm/W7uIciko1MZhGUDRv1wOaDNnfv3KAy3lf8pEhvK7qNUfwEywNHTCnKc97NDvD35do32jquK0VsvOZiwEAAQA= suman@Sumans-MacBook-Air.local
+09-03 16:44:16.151 14246 27742 I adbd    : [server]: Handshake succeeded.
+09-03 16:44:16.152 14246 27742 I adbd    : auth_key=QAAAAIGyDwl/cjlFbYY84WQZ4Wikmnh3GAcD+QkfGePqjKmsMB6Ef/NlKkTAA4N99poR6xCtFpYwhRxmG5r2YrtTLobAMhRQ8LACUtFrgP/vt7Y4TRnUliosTQsx0kEA4nQK7iIs6weHafVuRX4bNxLeXeIPSjCxUmm700i+ME9qwzG5f4A4PaBya4/6bZrjPjyLa9OOv1hlYZKotjr4nicuHlMKXY95CbaLIDO1XIXdxqJTcguWpp45RXPPbbpl8dD3vXvjyPyCHSD5KuvW+9/JROAG3s7487qdA2OA748wqoiHPYcX6FdbyWnVHZhrKxzTmlQELdfHO+wqtYv64VfIhL8dzy3CZTFiNapFOqb4YOTXNygCBxhG5hBaz06XtI3KdyRBzblln5sLVS6z0jm8vcw/eO4CKDEtCglxYK4UmR7t1BXD9/pZCjE+AK9EgEEr6hLiWMBlxYvr5Mc08jyFDqOFH7YTCDvQpjXPv0E91hoHkGAnz/MjgWdCX710vdv7zoYyHfhStW/MLc9m6eU87HmFaZZQDdiSzbeVGHFR1Zz3RANAf51nDsvt3PHsQbRvJbl6x9Qc+J2HmPDGFjKd9MXktYSq8TOHbm/W7uIciko1MZhGUDRv1wOaDNnfv3KAy3lf8pEhvK7qNUfwEywNHTCnKc97NDvD35do32jquK0VsvOZiwEAAQA= suman@Sumans-MacBook-Air.local
+09-03 16:44:16.153 14246 27743 I adbd    : host-31: read thread spawning
+09-03 16:44:16.153 14246 27742 I adbd    : adbd_wifi_secure_connect: connected host-31
+09-03 16:44:16.155 14246 14268 I adbd    : adbd_auth: marking framework writable
+09-03 16:44:16.156  4599 14157 D AdbDebuggingManager: Received WIFI TLS connected key message: QAAAAIGyDwl/cjlFbYY84WQZ4Wikmnh3GAcD+QkfGePqjKmsMB6Ef/NlKkTAA4N99poR6xCtFpYwhRxmG5r2YrtTLobAMhRQ8LACUtFrgP/vt7Y4TRnUliosTQsx0kEA4nQK7iIs6weHafVuRX4bNxLeXeIPSjCxUmm700i+ME9qwzG5f4A4PaBya4/6bZrjPjyLa9OOv1hlYZKotjr4nicuHlMKXY95CbaLIDO1XIXdxqJTcguWpp45RXPPbbpl8dD3vXvjyPyCHSD5KuvW+9/JROAG3s7487qdA2OA748wqoiHPYcX6FdbyWnVHZhrKxzTmlQELdfHO+wqtYv64VfIhL8dzy3CZTFiNapFOqb4YOTXNygCBxhG5hBaz06XtI3KdyRBzblln5sLVS6z0jm8vcw/eO4CKDEtCglxYK4UmR7t1BXD9/pZCjE+AK9EgEEr6hLiWMBlxYvr5Mc08jyFDqOFH7YTCDvQpjXPv0E91hoHkGAnz/MjgWdCX710vdv7zoYyHfhStW/MLc9m6eU87HmFaZZQDdiSzbeVGHFR1Zz3RANAf51nDsvt3PHsQbRvJbl6x9Qc+J2HmPDGFjKd9MXktYSq8TOHbm/W7uIciko1MZhGUDRv1wOaDNnfv3KAy3lf8pEhvK7qNUfwEywNHTCnKc97NDvD35do32jquK0VsvOZiwEAAQA= suman@Sumans-MacBook-Air.local
+09-03 16:44:16.204  4599  4829 D PkgPredictorService-NapPreloadController: [ML] Sent pkg = com.instagram.android uid: 0 type: booster
+09-03 16:44:16.507 14246 27741 W adbd    : timed out while waiting for FUNCTIONFS_BIND, trying again
+09-03 16:44:16.507 14246 27741 I adbd    : UsbFfs: connection terminated: monitor thread finished
+09-03 16:44:16.508 14246 14246 I adbd    : UsbFfs: already offline
+09-03 16:44:16.509 14246 14246 I adbd    : destroying transport UsbFfs
+09-03 16:44:16.509 14246 14246 I adbd    : UsbFfsConnection being destroyed
+09-03 16:44:16.555 14246 14269 I adbd    : opening control endpoint /dev/usb-ffs/adb/ep0
+09-03 16:44:16.558 14246 14269 I adbd    : UsbFfsConnection constructed
+09-03 16:44:16.561 14246 27744 I adbd    : UsbFfs-monitor thread spawned
+09-03 16:44:16.834  4599  7365 D SensorService: removeConnection, index : 0, size : 1
+09-03 16:44:16.834  4599  7365 D SensorService: # removeConnection, index : 0, size : 0
+09-03 16:44:16.834  4599  7365 D SensorService: Calling activate off 1
+09-03 16:44:16.835  4175  4175 I SensorsHub: batch: handle=1 period=66667000 timeout=0
+09-03 16:44:16.844 13282 27736 D SensorManager: unregisterListener
+09-03 16:44:16.851  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: mSuspendCounter-
+09-03 16:44:16.854  4599  7365 D SamsungAlarmManager: Cancel Alarm calling from uid:1000 pid :4599 / L:ba12a
+09-03 16:44:16.862  4599  7365 I SamsungAlarmManager: setLocked to kernel - T:2 / 20260903T165009, set=11670225, now=11317425
+09-03 16:44:16.864  4599  7365 I SamsungAlarmManager: setLocked to kernel - T:3 / 20260903T164500, set=11360564, now=11317427
+09-03 16:44:16.943  4599  7365 D SamsungAlarmManager: setExact (T:2/F:1/AC:false) 20260903T164416 now=11317506 - CU:10094/CP:13282/OP:PendingIntent{26c888d: PendingIntentRecord{973315a com.google.android.gms/com.google.android.gms.location_base broadcastIntent}}
+09-03 16:44:16.944  4599  7365 I SamsungAlarmManager: setLocked to kernel - T:2 / 20260903T164421, set=11322503, now=11317507
+09-03 16:44:16.951  4599  4612 D SamsungAlarmManager: setExact (T:3/F:9/AC:false) 20260903T194914 now=11317515 - CU:1000/CP:4599/L:ba12a:StatsCompanionService.anomaly
+09-03 16:44:16.952  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: wakeup_count+
+09-03 16:44:16.952  4599  4612 I SamsungAlarmManager: setLocked to kernel - T:2 / 20260903T164421, set=11322503, now=11317515
+09-03 16:44:16.952  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: wakeup_count-
+09-03 16:44:16.952  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: mSuspendCounter+
+09-03 16:44:16.954  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: mSuspendCounter-
+09-03 16:44:16.954  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: write mem+
+09-03 16:44:16.955  4599  7365 D SamsungAlarmManager: Cancel Alarm calling from uid:1000 pid :4599 / L:ba12a
+09-03 16:44:16.958  4599  7365 I SamsungAlarmManager: setLocked to kernel - T:2 / 20260903T164416, set=11317502, now=11317521
+09-03 16:44:16.959  4599  4714 D SamsungAlarmManager: Expired : 4
+09-03 16:44:16.959  4599  4714 V SamsungAlarmManager: Sending to uid : 10094 action=com.google.android.location.ALARM_WAKEUP_ACTIVITY_DETECTION alarm=Alarm{3df4a42 type 2 when 11317502 com.google.android.gms}
+09-03 16:44:16.965  4599  4714 D ActivityManager: Received BROADCAST intent 0x973315a Key{broadcastIntent pkg=com.google.android.gms/com.google.android.gms.location_base intent=act=com.google.android.location.ALARM_WAKEUP_ACTIVITY_DETECTION pkg=com.google.android.gms flags=0x4000000 u=0} requestCode=0 sent=0 from uid 1000
+09-03 16:44:16.999  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: write mem-
+09-03 16:44:17.000  4599  4612 I BatteryStatsService: In wakeup_callback: suspend aborted
+09-03 16:44:17.002  4599  4714 I SamsungAlarmManager: setLocked to kernel - T:2 / 20260903T165009, set=11670225, now=11317565
+09-03 16:44:17.003  4599  4714 I SamsungAlarmManager: setLocked to kernel - T:3 / 20260903T164500, set=11360564, now=11317566
+09-03 16:44:17.010  4599  7393 D SensorService: Calling batch handle==1 flags=0 rate=20000000 timeout== 0
+09-03 16:44:17.011  4175  4175 I SensorsHub: batch: handle=1 period=20000000 timeout=0
+09-03 16:44:17.011  4599  4612 D SamsungAlarmManager: setExact (T:3/F:9/AC:false) 20260903T194914 now=11317574 - CU:1000/CP:4599/L:ba12a:StatsCompanionService.anomaly
+09-03 16:44:17.011  4599  4612 I SamsungAlarmManager: setLocked to kernel - T:2 / 20260903T165009, set=11670225, now=11317574
+09-03 16:44:17.011  4599  4612 I SamsungAlarmManager: setLocked to kernel - T:3 / 20260903T164500, set=11360564, now=11317575
+09-03 16:44:17.012 13282 27745 D SensorManager: registerListener :: 1, LSM6DSL Accelerometer, 20000, 0, 
+09-03 16:44:17.072  4599  4626 W ProcessStats: Tracking association SourceState{410297c com.suman.mobilesensorlogger/10285 Top #62457} whose proc state 1 is better than process ProcessState{96da205 com.google.android.gms.persistent/10094 pkg=com.google.android.gms} proc state 2 (35 skipped)
+09-03 16:44:17.074  4599  4626 D PowerManagerService: [api] setDeviceIdleTempWhitelist: appids:  (uid: 1000 pid: 4599)
+09-03 16:44:17.135  4349  4826 I bauth_FPBAuthService: pcf : 0x1012, 0 ,1 ,0 ,0 ,0 ,0, 5.1.0.6
+09-03 16:44:17.135  4349  4826 I bauth_FPBAuthService: thread id : 1, preenroll_flag : 0, nd cnt : 0, cso : 0, et : 0
+09-03 16:44:17.135  4349  4826 I bauth_FPBAuthService: FPBAuthService, 11619
+09-03 16:44:17.201  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: wakeup_count+
+09-03 16:44:17.204  4599  4829 D PkgPredictorService-NapPreloadController: [ML] Sent pkg = com.mpokket.app uid: 0 type: booster
+09-03 16:44:17.363  4599  4643 I PowerManagerService: [PWL] Off : 941s ago
+09-03 16:44:17.363  4599  4643 I PowerManagerService: [PWL]   PowerManagerService.WakeLocks: ref count=1
+09-03 16:44:17.364  4599  4643 I PowerManagerService: [PWL]     mWakeLockSummary : 0x41
+09-03 16:44:17.364  4599  4643 I PowerManagerService: [PWL]       PARTIAL_WAKE_LOCK              'CollectionLib-SigCollector' ACQ=-357ms (uid=10094 pid=13282 pkg=com.google.android.gms ws=WorkSource{ chains=WorkChain{(10094), (10094, com.google.android.gms)}})
+09-03 16:44:17.474  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: wakeup_count-
+09-03 16:44:17.475  4103  6730 I android.system.suspend@1.0-service: !@SystemSuspend: mSuspendCounter+
+09-03 16:44:17.563 14246 27744 W adbd    : timed out while waiting for FUNCTIONFS_BIND, trying again
+09-03 16:44:17.563 14246 27744 I adbd    : UsbFfs: connection terminated: monitor thread finished
+09-03 16:44:17.564 14246 14246 I adbd    : UsbFfs: already offline
+09-03 16:44:17.564 14246 14246 I adbd    : destroying transport UsbFfs
+09-03 16:44:17.564 14246 14246 I adbd    : UsbFfsConnection being destroyed
+09-03 16:44:17.603 14246 14269 I adbd    : opening control endpoint /dev/usb-ffs/adb/ep0
+09-03 16:44:17.607 14246 14269 I adbd    : UsbFfsConnection constructed
+09-03 16:44:17.609 14246 27746 I adbd    : UsbFfs-monitor thread spawned
+09-03 16:44:18.134  4236  4236 I SurfaceFlinger: SFWD update time=9819375929630
+09-03 16:44:18.136  4349  4826 I bauth_FPBAuthService: pcf : 0x1012, 0 ,1 ,0 ,0 ,0 ,0, 5.1.0.6
+09-03 16:44:18.136  4349  4826 I bauth_FPBAuthService: thread id : 1, preenroll_flag : 0, nd cnt : 0, cso : 0, et : 0
+09-03 16:44:18.136  4349  4826 I bauth_FPBAuthService: FPBAuthService, 11619
+09-03 16:44:18.610 14246 27746 W adbd    : timed out while waiting for FUNCTIONFS_BIND, trying again
+09-03 16:44:18.611 14246 27746 I adbd    : UsbFfs: connection terminated: monitor thread finished
+09-03 16:44:18.612 14246 14246 I adbd    : UsbFfs: already offline
+09-03 16:44:18.612 14246 14246 I adbd    : destroying transport UsbFfs
+09-03 16:44:18.613 14246 14246 I adbd    : UsbFfsConnection being destroyed
+09-03 16:44:18.647 14246 14269 I adbd    : opening control endpoint /dev/usb-ffs/adb/ep0
+09-03 16:44:18.650 14246 14269 I adbd    : UsbFfsConnection constructed
+09-03 16:44:18.652 14246 27747 I adbd    : UsbFfs-monitor thread spawned
+09-03 16:44:19.136  4349  4826 I bauth_FPBAuthService: pcf : 0x1012, 0 ,1 ,0 ,0 ,0 ,0, 5.1.0.6
+09-03 16:44:19.137  4349  4826 I bauth_FPBAuthService: thread id : 1, preenroll_flag : 0, nd cnt : 0, cso : 0, et : 0
+09-03 16:44:19.137  4349  4826 I bauth_FPBAuthService: FPBAuthService, 11619
+09-03 16:44:19.655 14246 27747 W adbd    : timed out while waiting for FUNCTIONFS_BIND, trying again
+09-03 16:44:19.655 14246 27747 I adbd    : UsbFfs: connection terminated: monitor thread finished
+09-03 16:44:19.656 14246 14246 I adbd    : UsbFfs: already offline
+09-03 16:44:19.656 14246 14246 I adbd    : destroying transport UsbFfs
+09-03 16:44:19.657 14246 14246 I adbd    : UsbFfsConnection being destroyed
+09-03 16:44:19.687 14246 14269 I adbd    : opening control endpoint /dev/usb-ffs/adb/ep0
+09-03 16:44:19.690 14246 14269 I adbd    : UsbFfsConnection constructed
+09-03 16:44:19.693 14246 27748 I adbd    : UsbFfs-monitor thread spawned

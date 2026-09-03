@@ -8,7 +8,7 @@ import sys
 import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from emergency_service import format_emergency_email, send_smtp_email, DEFAULT_RECIPIENT
+from emergency_service import format_emergency_email, send_smtp_email, get_smtp_config
 
 
 class TestEmergencyService(unittest.TestCase):
@@ -64,19 +64,62 @@ class TestEmergencyService(unittest.TestCase):
         self.assertNotIn("-1 BPM", body)
 
     def test_default_recipient(self):
-        self.assertEqual(DEFAULT_RECIPIENT, "sumankmdvg@gmail.com")
+        config = get_smtp_config(reload_file=False)
+        self.assertEqual(config["recipient"], "sumankmdvg@gmail.com")
 
-    def test_mock_dispatch_without_smtp(self):
-        # When SMTP credentials are empty, must succeed in MOCK_LOCAL_VERIFIED mode
-        subject, body = format_emergency_email({
-            "timeString": "03 September 2026, 15:35:21",
-            "heartRate": 75.0,
-            "latitude": 14.4594,
-            "longitude": 75.9240
-        })
-        result = send_smtp_email([DEFAULT_RECIPIENT], subject, body)
-        self.assertTrue(result["success"])
-        self.assertIn(DEFAULT_RECIPIENT, result["recipients"])
+    def test_unconfigured_smtp_fails_clearly(self):
+        from unittest.mock import patch
+        with patch("emergency_service.get_smtp_config") as mock_cfg:
+            mock_cfg.return_value = {
+                "host": "smtp.gmail.com",
+                "port": 587,
+                "user": "",
+                "password": "",
+                "from": "SmartFall AI Alert <noreply@smartfallai.com>",
+                "use_tls": True,
+                "use_ssl": False,
+                "recipient": "sumankmdvg@gmail.com",
+                "configured": False
+            }
+            subject, body = format_emergency_email({
+                "timeString": "03 September 2026, 15:35:21",
+                "heartRate": 75.0,
+                "latitude": 14.4594,
+                "longitude": 75.9240
+            })
+            result = send_smtp_email(["sumankmdvg@gmail.com"], subject, body)
+            self.assertFalse(result["success"])
+            self.assertEqual(result["mode"], "SMTP_UNCONFIGURED")
+            self.assertIn("SMTP_USER", result["error"])
+
+    def test_authenticated_smtp_success(self):
+        from unittest.mock import patch, MagicMock
+        with patch("emergency_service.get_smtp_config") as mock_cfg, patch("smtplib.SMTP") as mock_smtp:
+            mock_cfg.return_value = {
+                "host": "smtp.gmail.com",
+                "port": 587,
+                "user": "testuser@gmail.com",
+                "password": "test-app-password",
+                "from": "SmartFall AI Alert <testuser@gmail.com>",
+                "use_tls": True,
+                "use_ssl": False,
+                "recipient": "sumankmdvg@gmail.com",
+                "configured": True
+            }
+            mock_server = MagicMock()
+            mock_smtp.return_value.__enter__.return_value = mock_server
+            mock_server.send_message.return_value = {}  # No rejections
+
+            subject, body = format_emergency_email({
+                "timeString": "03 September 2026, 15:35:21",
+                "heartRate": 75.0
+            })
+            result = send_smtp_email(["sumankmdvg@gmail.com"], subject, body)
+            self.assertTrue(result["success"])
+            self.assertEqual(result["mode"], "SMTP_ACCEPTED")
+            mock_server.starttls.assert_called_once()
+            mock_server.login.assert_called_once_with("testuser@gmail.com", "test-app-password")
+            mock_server.send_message.assert_called_once()
 
 
 if __name__ == "__main__":
