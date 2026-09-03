@@ -62,8 +62,6 @@ class PhoneSyncManager(
             data.speed,
             data.accuracy,
             data.heartRate,
-            data.spo2,
-            data.pressure,
             data.activity
         ).joinToString(",")
     }

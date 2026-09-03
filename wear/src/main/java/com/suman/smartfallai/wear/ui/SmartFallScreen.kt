@@ -29,9 +29,7 @@ fun SmartFallScreen(
     activity: String,
     sampleCount: Int,
     gpsData: GpsData?,
-    heartRate: Int = 0,
-    spo2: Int = 0,
-    pressure: Float = 0f,
+    heartRate: Int = -1,
     fallState: com.suman.smartfallai.wear.ml.FallState = com.suman.smartfallai.wear.ml.FallState.MONITORING,
     countdownRemaining: Int = 0,
     onCancelFallAlert: () -> Unit = {},
@@ -295,16 +293,10 @@ fun SmartFallScreen(
 
 
                         Text(
-
-                            text =
-
-                                "${if (heartRate <= 0) "N/A" else "$heartRate BPM"}    SpO2 ${if (spo2 <= 0) "N/A" else "$spo2"}    P ${if (pressure <= 0f) "N/A" else "$pressure"}",
-
-
+                            text = if (heartRate > 0) "Heart Rate: $heartRate BPM" else "Heart Rate: Unavailable",
                             color = Color.White,
-
-                            fontSize = 10.sp
-
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Medium
                         )
 
 

@@ -4,7 +4,6 @@ import android.content.Context
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
-import com.suman.smartfallai.storage.WatchCsvLogger
 
 class WatchManager(
     context: Context
@@ -12,9 +11,6 @@ class WatchManager(
 
     private val messageClient =
         Wearable.getMessageClient(context)
-
-    private val watchCsvLogger =
-        WatchCsvLogger(context)
 
     private var isReceiving = false
     private val nodeClient = Wearable.getNodeClient(context)
@@ -29,7 +25,6 @@ class WatchManager(
 
     fun startRecordingSession(activity: String, sessionId: String): String {
         currentSessionId = sessionId
-        val fileName = watchCsvLogger.startLogging(activity, sessionId)
         isReceiving = true
 
         val payload = "$sessionId,$activity".toByteArray(Charsets.UTF_8)
@@ -39,13 +34,12 @@ class WatchManager(
             }
         }
 
-        return fileName
+        return "${sessionId}_WATCH"
     }
 
     fun stopRecordingSession(stopTimestamp: Long) {
         if (!isReceiving) return
 
-        watchCsvLogger.stopLogging()
         isReceiving = false
 
         val payload = "$currentSessionId,$stopTimestamp".toByteArray(Charsets.UTF_8)
@@ -63,18 +57,25 @@ class WatchManager(
     ) {
         when (messageEvent.path) {
             WATCH_SAMPLE_PATH -> {
-                if (isReceiving) {
-                    watchCsvLogger.log(
-                        String(messageEvent.data, Charsets.UTF_8)
-                    )
-                }
+                // In-memory runtime: sample streaming to disk eliminated
             }
             SOS_TRIGGERED_PATH -> {
                 val dataStr = String(messageEvent.data, Charsets.UTF_8)
                 android.util.Log.i("WatchManager", "Received SOS trigger from Watch: $dataStr")
                 val parts = dataStr.split(",")
                 val timestamp = parts.getOrNull(2)?.toLongOrNull() ?: System.currentTimeMillis()
-                emergencyManager.sendEmergencyAlert("Samsung Galaxy Watch 4 (SM-R870)", timestamp)
+                val heartRate = parts.getOrNull(4)?.toIntOrNull()
+                val latitude = parts.getOrNull(5)?.toDoubleOrNull()
+                val longitude = parts.getOrNull(6)?.toDoubleOrNull()
+                val accuracy = parts.getOrNull(7)?.toFloatOrNull()
+                emergencyManager.sendEmergencyAlert(
+                    deviceSource = "Samsung Galaxy Watch 4 (SM-R870)",
+                    fallTimeMs = timestamp,
+                    heartRate = heartRate,
+                    latitude = latitude,
+                    longitude = longitude,
+                    accuracy = accuracy
+                )
             }
         }
     }

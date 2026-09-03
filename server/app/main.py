@@ -21,10 +21,12 @@ def create_app() -> FastAPI:
     def health() -> dict[str, str]:
         return {"status": "ok"}
 
+    from app.api import emergency
     app.include_router(devices.router, prefix=settings.api_v1_prefix)
     app.include_router(sessions.router, prefix=settings.api_v1_prefix)
     app.include_router(files.router, prefix=settings.api_v1_prefix)
     app.include_router(sync.router, prefix=settings.api_v1_prefix)
+    app.include_router(emergency.router, prefix=settings.api_v1_prefix)
     return app
 
 

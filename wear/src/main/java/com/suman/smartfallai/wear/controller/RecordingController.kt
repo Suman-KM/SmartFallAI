@@ -5,7 +5,6 @@ import com.suman.smartfallai.wear.health.HealthManager
 import com.suman.smartfallai.wear.communication.PhoneSyncManager
 import com.suman.smartfallai.wear.gps.GpsManager
 import com.suman.smartfallai.wear.sensors.WatchSensorManager
-import com.suman.smartfallai.wear.storage.CsvLogger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -28,9 +27,6 @@ class RecordingController(
 
     private val gpsManager =
         GpsManager(context)
-
-    private val csvLogger =
-        CsvLogger(context)
 
     private val phoneSyncManager =
         PhoneSyncManager(context)
@@ -72,8 +68,7 @@ class RecordingController(
         currentActivity = activity
         currentSessionId = sessionId
 
-        val fileName =
-            csvLogger.startLogging(activity, currentSessionId)
+        val fileName = "${currentSessionId}_IN_MEMORY"
 
         _state.value =
             _state.value.copy(
@@ -101,39 +96,7 @@ class RecordingController(
                         continue
                     }
 
-                    val gps =
-                        gpsManager.gpsData.value
-
-                    val combinedSensor =
-                        sensor.copy(
-
-                            latitude =
-                                gps?.latitude ?: 0.0,
-
-                            longitude =
-                                gps?.longitude ?: 0.0,
-
-                            altitude =
-                                gps?.altitude ?: 0.0,
-
-                            speed =
-                                gps?.speed ?: 0f,
-
-                            accuracy =
-                                gps?.accuracy ?: 0f,
-
-                            heartRate =
-                                healthManager.heartRate.value.toFloat(),
-
-                            activity =
-                                currentActivity
-                        )
-
-                    csvLogger.log(
-                        combinedSensor
-                    )
-
-                    // Feed 9-DoF IMU to Real-time Watch Random Forest Fall Inference Engine
+                    // Feed 9-DoF IMU directly to Real-time Watch Random Forest Fall Inference Engine (in-memory)
                     fallInferenceEngine.addSample(
                         accX = sensor.accX,
                         accY = sensor.accY,
@@ -146,11 +109,6 @@ class RecordingController(
                         yaw = sensor.yaw
                     )
 
-                    phoneSyncManager.sendWatchSample(
-                        sessionId = currentSessionId,
-                        data = combinedSensor
-                    )
-
                     _state.value =
                         _state.value.copy(
                             sampleCount =
@@ -158,7 +116,6 @@ class RecordingController(
                         )
                 }
             } finally {
-                csvLogger.stopLogging()
                 fallInferenceEngine.reset()
                 android.util.Log.d("RecordingController", "Recording stopped. " +
                     "Received: ${sensorManager.sensorEventsReceived}, " +
@@ -205,8 +162,6 @@ class RecordingController(
         sensorManager.stop()
 
         gpsManager.stop()
-
-        csvLogger.stopLogging()
 
         currentSessionId = ""
     }

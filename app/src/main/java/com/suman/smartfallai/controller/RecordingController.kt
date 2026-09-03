@@ -5,7 +5,6 @@ import android.content.Context
 import com.suman.smartfallai.communication.WatchManager
 import com.suman.smartfallai.gps.GpsManager
 import com.suman.smartfallai.sensors.PhoneSensorManager
-import com.suman.smartfallai.storage.CsvLogger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -24,9 +23,6 @@ class RecordingController(
 
     private val gpsManager =
         GpsManager(context)
-
-    private val csvLogger =
-        CsvLogger(context)
 
     private val watchManager =
         WatchManager(context)
@@ -57,8 +53,7 @@ class RecordingController(
         val shortUuid = java.util.UUID.randomUUID().toString().substring(0, 4).uppercase(java.util.Locale.getDefault())
         val sessionId = "SESSION_${dateFormat.format(java.util.Date())}_$shortUuid"
 
-        val fileName =
-            csvLogger.startLogging(activity, sessionId)
+        val fileName = "${sessionId}_IN_MEMORY"
 
         watchManager.startRecordingSession(activity, sessionId)
 
@@ -79,29 +74,7 @@ class RecordingController(
 
             phoneSensorManager.sensorData.collectLatest { sensor ->
 
-                val gps = gpsManager.currentLocation
-
-                csvLogger.log(
-
-                    sensor.copy(
-
-                        latitude = gps.latitude,
-
-                        longitude = gps.longitude,
-
-                        altitude = gps.altitude,
-
-                        speed = gps.speed,
-
-                        accuracy = gps.accuracy,
-
-                        activity = currentActivity
-
-                    )
-
-                )
-
-                // Feed 9-DoF IMU to Real-time ONNX Fall Inference Engine
+                // Feed 9-DoF IMU directly to Real-time ONNX Fall Inference Engine (in-memory)
                 fallInferenceEngine.addSample(
                     accX = sensor.accX,
                     accY = sensor.accY,
@@ -137,8 +110,6 @@ class RecordingController(
         phoneSensorManager.stop()
 
         gpsManager.stop()
-
-        csvLogger.stopLogging()
 
         watchManager.stopRecordingSession(stopTimestamp)
 

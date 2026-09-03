@@ -25,10 +25,6 @@ data class SensorData(
     val accuracy: Float = 0f,
 
     val heartRate: Float = 0f,
-    val spo2: Float = 0f,
-
-    val pressure: Float = 0f,
-
     val activity: String = "Unknown",
 
     // Prevents the initial empty StateFlow value

@@ -19,6 +19,7 @@ fun SmartFallScreen(
     state: RecordingState,
     fallState: FallState = FallState.MONITORING,
     countdownRemaining: Int = 0,
+    emailDeliveryStatus: com.suman.smartfallai.emergency.EmailDeliveryStatus = com.suman.smartfallai.emergency.EmailDeliveryStatus.IDLE,
     onCancelFallAlert: () -> Unit = {},
     onDismissAlert: () -> Unit = {},
     onStart: (String) -> Unit,
@@ -112,6 +113,18 @@ fun SmartFallScreen(
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onError
                     )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                        text = when (emailDeliveryStatus) {
+                            com.suman.smartfallai.emergency.EmailDeliveryStatus.IDLE -> "Emergency Email: Ready"
+                            com.suman.smartfallai.emergency.EmailDeliveryStatus.SENDING -> "Emergency Email: Sending..."
+                            com.suman.smartfallai.emergency.EmailDeliveryStatus.SENT -> "Emergency Email: Sent"
+                            com.suman.smartfallai.emergency.EmailDeliveryStatus.FAILED -> "Emergency Email: Failed"
+                        },
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onError
+                    )
                     Spacer(modifier = Modifier.height(12.dp))
                     Button(
                         onClick = onDismissAlert,
@@ -146,24 +159,29 @@ fun SmartFallScreen(
         }
 
         HorizontalDivider()
-        Text("Status : ${state.status}")
-        Text("Fall Monitor : ${fallState.name}")
-        Text("Samples : ${state.sampleCount}")
-        Text("Current File")
-        Text(state.currentFile)
+        Text(
+            text = "System Status : ${if (state.isRecording) "Active Fall Monitoring" else "Standby"}",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold
+        )
+        Text("Fall State : ${fallState.name}")
+        Text("Pipeline : Real-Time In-Memory (Zero CSV Overhead)")
         HorizontalDivider()
 
         if (!state.isRecording) {
             Button(
-                onClick = { onStart(selectedActivityLabel.name) }
+                onClick = { onStart(selectedActivityLabel.name) },
+                modifier = Modifier.fillMaxWidth(0.8f).height(48.dp)
             ) {
-                Text("START RECORDING")
+                Text("START MONITORING", fontWeight = FontWeight.Bold)
             }
         } else {
             Button(
-                onClick = onStop
+                onClick = onStop,
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
+                modifier = Modifier.fillMaxWidth(0.8f).height(48.dp)
             ) {
-                Text("STOP RECORDING")
+                Text("STOP MONITORING", fontWeight = FontWeight.Bold)
             }
         }
     }

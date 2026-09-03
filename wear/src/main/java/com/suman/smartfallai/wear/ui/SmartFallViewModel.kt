@@ -67,6 +67,12 @@ class SmartFallViewModel(
 
 
 
+    fun startHeartRate() {
+        viewModelScope.launch {
+            healthManager.start()
+        }
+    }
+
     init {
 
 

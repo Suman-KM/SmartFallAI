@@ -26,8 +26,25 @@ class MainActivity : ComponentActivity() {
 
         }
 
+    private val testEmergencyReceiver = object : android.content.BroadcastReceiver() {
+        override fun onReceive(context: android.content.Context?, intent: android.content.Intent?) {
+            android.util.Log.i("MainActivity", "Received TEST_EMERGENCY_ALERT broadcast")
+            com.suman.smartfallai.emergency.EmergencyManager(this@MainActivity).sendEmergencyAlert(
+                deviceSource = "Samsung Galaxy A50s (Controlled Test)",
+                heartRate = 78
+            )
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val filter = android.content.IntentFilter("com.suman.smartfallai.TEST_EMERGENCY_ALERT")
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(testEmergencyReceiver, filter, android.content.Context.RECEIVER_EXPORTED)
+        } else {
+            registerReceiver(testEmergencyReceiver, filter)
+        }
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O_MR1) {
             setShowWhenLocked(true)
@@ -57,6 +74,10 @@ class MainActivity : ComponentActivity() {
                 .countdownRemaining
                 .collectAsStateWithLifecycle()
 
+            val emailDeliveryStatus by viewModel
+                .emailDeliveryStatus
+                .collectAsStateWithLifecycle()
+
             androidx.compose.runtime.DisposableEffect(recordingState.isRecording) {
                 val view = window.decorView
                 if (recordingState.isRecording) {
@@ -76,6 +97,7 @@ class MainActivity : ComponentActivity() {
                 state = recordingState,
                 fallState = fallState,
                 countdownRemaining = countdownRemaining,
+                emailDeliveryStatus = emailDeliveryStatus,
                 onCancelFallAlert = { viewModel.cancelFallAlert() },
                 onDismissAlert = { viewModel.dismissAlert() },
                 onStart = { activity ->
@@ -115,6 +137,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        try {
+            unregisterReceiver(testEmergencyReceiver)
+        } catch (e: Exception) {}
         viewModel.stopGps()
     }
 }

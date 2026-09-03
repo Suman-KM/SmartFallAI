@@ -32,6 +32,9 @@ class SmartFallViewModel(
     val countdownRemaining: StateFlow<Int> =
         recordingController.fallInferenceEngine.countdownRemaining
 
+    val emailDeliveryStatus: StateFlow<com.suman.smartfallai.emergency.EmailDeliveryStatus> =
+        com.suman.smartfallai.emergency.EmergencyManager.globalDeliveryStatus
+
     fun cancelFallAlert() {
         recordingController.fallInferenceEngine.cancelCountdown()
     }

@@ -29,11 +29,10 @@ class MainActivity : ComponentActivity() {
 
 
     private val requestPermissionsLauncher =
-
         registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) {
-
+            viewModel.startHeartRate()
         }
 
     override fun onCreate(
@@ -134,8 +133,6 @@ class MainActivity : ComponentActivity() {
                     sampleCount = state.sampleCount.toInt(),
                     gpsData = gpsData,
                     heartRate = heartRate,
-                    spo2 = 0,
-                    pressure = 0f,
                     fallState = fallState,
                     countdownRemaining = countdownRemaining,
                     onCancelFallAlert = { viewModel.cancelFallAlert() },
