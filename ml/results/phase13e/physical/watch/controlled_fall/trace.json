@@ -1,0 +1,12 @@
+{
+  "max_prob": 0.89,
+  "max_acc": 41.39,
+  "max_jerk": 1999.5,
+  "countdown": true,
+  "states": [
+    "FALL_SUSPECTED",
+    "SOS_TRIGGERED",
+    "MONITORING"
+  ],
+  "lines_count": 24
+}

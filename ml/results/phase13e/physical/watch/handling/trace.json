@@ -1,0 +1,10 @@
+{
+  "max_prob": 0.24,
+  "max_acc": 12.06,
+  "max_jerk": 118.0,
+  "countdown": false,
+  "states": [
+    "MONITORING"
+  ],
+  "lines_count": 26
+}

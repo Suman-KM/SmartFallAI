@@ -44,6 +44,8 @@ class FallInferenceEngine(context: Context) {
     private var countdownJob: Job? = null
     private var suspectedConsecutiveWindows = 0
     private var recentImpactCountdown = 0
+    private var activeMotionRecoveryWindows = 0
+    private var consecutiveCadenceWindows = 0
 
     fun addSample(accX: Float, accY: Float, accZ: Float,
                   gyroX: Float, gyroY: Float, gyroZ: Float,
@@ -114,14 +116,14 @@ class FallInferenceEngine(context: Context) {
         val accStd = kotlin.math.sqrt(accVariance)
 
         // Stage 2: Abnormal Impact Collision Shock Gate (Watch SM-R870):
-        // Real wrist collisions produce hard shock (>= 24.0 m/s^2) with high jerk (>= 500 m/s^3)
-        // or dynamic arm tumbling (accRange >= 16 m/s^2, jerk >= 350 m/s^3, gyro >= 4.0 rad/s)
-        val isCollisionShock = (maxAccMag >= 24.0f && maxJerk >= 500.0f) ||
-                               (accRange >= 16.0f && maxJerk >= 350.0f && maxGyroMag >= 4.0f)
+        // Real wrist collisions produce hard shock (>= 26.0 m/s^2) with high jerk (>= 550 m/s^3)
+        // or dynamic arm tumbling (accRange >= 16 m/s^2, jerk >= 400 m/s^3, gyro >= 4.0 rad/s)
+        val isCollisionShock = (maxAccMag >= 26.0f && maxJerk >= 550.0f) ||
+                               (accRange >= 16.0f && maxJerk >= 400.0f && maxGyroMag >= 4.0f)
 
         // Stage 3: Continuous Locomotion Cadence Check:
-        // Jumping and running display continuous extreme wrist oscillation (accStd >= 5.5, gyro >= 4.0)
-        val isLocomotionCadence = (accStd >= 5.5f && maxGyroMag >= 4.0f) || (accStd >= 8.0f)
+        // Active arm swing in brisk walking, running, and jumping produces ongoing wrist dynamics
+        val isLocomotionCadence = (accStd >= 2.5f && maxGyroMag >= 2.5f) || (accStd >= 5.0f)
 
         // Stage 4: Post-Impact Stillness & Immobility Check:
         // In wrist falls, arm motion settles into low dynamic variance (accStd <= 3.8, gyro <= 3.2)
@@ -153,6 +155,11 @@ class FallInferenceEngine(context: Context) {
             }
         }
 
+        // Phase 13E Posture Consistency Check:
+        // An active upright activity (STANDING or WALKING) cannot be a fallen victim on the floor
+        val isUprightAdl = (topIdx == 11 || topIdx == 13) && (topConf >= fallProb)
+        val hasFallPosture = (!isUprightAdl) && ((fallProb >= 0.40f) || (lyingDownProb >= 0.45f && accStd <= 2.0f))
+
         val latency = System.currentTimeMillis() - startTime
 
         // Multi-Stage Temporal Fall Verification:
@@ -164,25 +171,46 @@ class FallInferenceEngine(context: Context) {
                     if (isCollisionShock) {
                         // Stage 2: Collision shock registered -> Arm 4-window verification horizon (~2 to 3s)
                         recentImpactCountdown = 4
+                        consecutiveCadenceWindows = 0
                         Log.i("WatchFallML", "Potential impact collision detected! AccPeak=$maxAccMag, JerkPeak=$maxJerk. Awaiting post-impact stillness confirmation.")
                     } else if (recentImpactCountdown > 0) {
                         if (isLocomotionCadence) {
-                            // Stage 3: Movement continuation detected! User resumed walking/running/jumping -> DISCARD!
-                            recentImpactCountdown = 0
-                            Log.d("WatchFallML", "Locomotion cadence detected after shock (AccStd=$accStd, GyroPeak=$maxGyroMag). Aborting false alarm.")
-                        } else if (isSettledImmobility && (fallProb >= 0.40f || (lyingDownProb >= 0.45f && accStd <= 2.0f))) {
+                            // Stage 3: Require 2 consecutive windows of active locomotion cadence to discard shock
+                            consecutiveCadenceWindows++
+                            if (consecutiveCadenceWindows >= 2) {
+                                recentImpactCountdown = 0
+                                consecutiveCadenceWindows = 0
+                                Log.d("WatchFallML", "Consecutive locomotion cadence confirmed after shock. Aborting false alarm.")
+                            }
+                        } else {
+                            consecutiveCadenceWindows = 0
+                        }
+
+                        if (recentImpactCountdown > 0 && isSettledImmobility && hasFallPosture) {
                             // Stage 4: Post-impact immobility confirmed with fall/recumbent posture!
                             recentImpactCountdown = 0
+                            consecutiveCadenceWindows = 0
                             triggeredFallSuspected = true
                             _currentState.value = FallState.FALL_SUSPECTED
                             startCountdown()
-                        } else {
+                        } else if (recentImpactCountdown > 0) {
                             recentImpactCountdown--
                         }
                     }
                 }
                 FallState.FALL_SUSPECTED -> {
-                    // Countdown is running. Preserve countdown state
+                    // Active Motion Recovery Cancellation on Wear OS:
+                    // If the user resumes active locomotion (walking/running/jumping) while countdown is running, automatically abort
+                    if (isLocomotionCadence) {
+                        activeMotionRecoveryWindows++
+                        if (activeMotionRecoveryWindows >= 2) {
+                            Log.i("WatchFallML", "Active locomotion detected during countdown on Wear OS. Automatically cancelling false alarm.")
+                            cancelCountdown()
+                            activeMotionRecoveryWindows = 0
+                        }
+                    } else {
+                        activeMotionRecoveryWindows = 0
+                    }
                 }
                 FallState.FALL_CONFIRMED -> {
                     // Escalated to SOS
@@ -194,6 +222,7 @@ class FallInferenceEngine(context: Context) {
                     _currentState.value = FallState.MONITORING
                     suspectedConsecutiveWindows = 0
                     recentImpactCountdown = 0
+                    activeMotionRecoveryWindows = 0
                 }
             }
         }

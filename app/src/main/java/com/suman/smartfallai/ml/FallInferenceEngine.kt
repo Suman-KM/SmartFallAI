@@ -44,6 +44,8 @@ class FallInferenceEngine(context: Context) {
     private var countdownJob: Job? = null
     private var suspectedConsecutiveWindows = 0
     private var recentImpactCountdown = 0
+    private var activeMotionRecoveryWindows = 0
+    private var consecutiveCadenceWindows = 0
 
     fun addSample(accX: Float, accY: Float, accZ: Float,
                   gyroX: Float, gyroY: Float, gyroZ: Float,
@@ -114,18 +116,18 @@ class FallInferenceEngine(context: Context) {
         val accStd = kotlin.math.sqrt(accVariance)
 
         // Stage 2: Abnormal Impact Collision Shock Gate (Phone SM-A507FN):
-        // Real ground collisions produce high acceleration (>= 20.0 m/s^2) with abrupt deceleration jerk (>= 350 m/s^3)
-        // or intense rotational tumble (accRange >= 14 m/s^2, jerk >= 250 m/s^3, gyro >= 3.5 rad/s)
-        val isCollisionShock = (maxAccMag >= 20.0f && maxJerk >= 350.0f) ||
-                               (accRange >= 14.0f && maxJerk >= 250.0f && maxGyroMag >= 3.5f)
+        // Real ground collisions produce high acceleration (>= 28.0 m/s^2) with abrupt deceleration jerk (>= 500 m/s^3)
+        // or intense rotational tumble (accRange >= 18 m/s^2, jerk >= 350 m/s^3, gyro >= 4.0 rad/s)
+        val isCollisionShock = (maxAccMag >= 28.0f && maxJerk >= 500.0f) ||
+                               (accRange >= 18.0f && maxJerk >= 350.0f && maxGyroMag >= 4.0f)
 
         // Stage 3: Continuous Locomotion Cadence Check:
         // In active running or rhythmic locomotion, dynamic variance and rotation continue indefinitely
-        val isLocomotionCadence = (accStd >= 3.2f && maxGyroMag >= 3.5f) || (accStd >= 5.0f)
+        val isLocomotionCadence = (accStd >= 2.5f && maxGyroMag >= 2.5f) || (accStd >= 4.5f)
 
         // Stage 4: Post-Impact Stillness & Immobility Check:
-        // Following impact, a fall victim rests recumbent on the floor (variance < 2.4 m/s^2, gyro < 2.2 rad/s)
-        val isSettledImmobility = (accStd <= 2.4f) && (maxGyroMag <= 2.2f)
+        // Following impact, a fall victim rests recumbent on the floor (variance < 2.0 m/s^2, gyro < 2.0 rad/s)
+        val isSettledImmobility = (accStd <= 2.0f) && (maxGyroMag <= 2.0f)
 
         // 1. Preprocess with frozen Train RobustScaler
         scaler.transformInPlace(window)
@@ -150,6 +152,11 @@ class FallInferenceEngine(context: Context) {
             }
         }
 
+        // Phase 13E Posture Consistency Check:
+        // An active upright activity (WALKING, STANDING, or SITTING) cannot be a fallen victim on the floor
+        val isUprightAdl = (topIdx == 13 || topIdx == 11 || topIdx == 9) && (topConf >= fallProb)
+        val hasFallPosture = (!isUprightAdl) && ((fallProb >= 0.50f) || (lyingDownProb >= 0.45f && accStd <= 1.5f))
+
         val latency = System.currentTimeMillis() - startTime
 
         // Multi-Stage Temporal Fall Verification:
@@ -161,25 +168,46 @@ class FallInferenceEngine(context: Context) {
                     if (isCollisionShock) {
                         // Stage 2: Collision shock registered -> Arm 4-window verification horizon (~2 to 3s)
                         recentImpactCountdown = 4
+                        consecutiveCadenceWindows = 0
                         Log.i("PhoneFallML", "Potential impact collision detected! AccPeak=$maxAccMag, JerkPeak=$maxJerk. Awaiting post-impact stillness confirmation.")
                     } else if (recentImpactCountdown > 0) {
                         if (isLocomotionCadence) {
-                            // Stage 3: Movement continuation detected! User resumed walking/running -> DISCARD!
-                            recentImpactCountdown = 0
-                            Log.d("PhoneFallML", "Locomotion cadence detected after shock (AccStd=$accStd, GyroPeak=$maxGyroMag). Aborting false alarm.")
-                        } else if (isSettledImmobility && (fallProb >= 0.40f || (lyingDownProb >= 0.45f && accStd <= 1.8f))) {
+                            // Stage 3: Require 2 consecutive windows of active locomotion cadence to discard shock
+                            consecutiveCadenceWindows++
+                            if (consecutiveCadenceWindows >= 2) {
+                                recentImpactCountdown = 0
+                                consecutiveCadenceWindows = 0
+                                Log.d("PhoneFallML", "Consecutive locomotion cadence confirmed after shock. Aborting false alarm.")
+                            }
+                        } else {
+                            consecutiveCadenceWindows = 0
+                        }
+
+                        if (recentImpactCountdown > 0 && isSettledImmobility && hasFallPosture) {
                             // Stage 4: Post-impact immobility confirmed with fall/recumbent posture!
                             recentImpactCountdown = 0
+                            consecutiveCadenceWindows = 0
                             triggeredFallSuspected = true
                             _currentState.value = FallState.FALL_SUSPECTED
                             startCountdown()
-                        } else {
+                        } else if (recentImpactCountdown > 0) {
                             recentImpactCountdown--
                         }
                     }
                 }
                 FallState.FALL_SUSPECTED -> {
-                    // Countdown is running. Preserve countdown state
+                    // Active Motion Recovery Cancellation:
+                    // If the user resumes active locomotion (walking/running) while countdown is running, automatically abort
+                    if (isLocomotionCadence) {
+                        activeMotionRecoveryWindows++
+                        if (activeMotionRecoveryWindows >= 2) {
+                            Log.i("PhoneFallML", "Active locomotion detected during countdown (AccStd=$accStd, GyroPeak=$maxGyroMag). Automatically cancelling false alarm.")
+                            cancelCountdown()
+                            activeMotionRecoveryWindows = 0
+                        }
+                    } else {
+                        activeMotionRecoveryWindows = 0
+                    }
                 }
                 FallState.FALL_CONFIRMED -> {
                     // Escalated to SOS
@@ -191,6 +219,7 @@ class FallInferenceEngine(context: Context) {
                     _currentState.value = FallState.MONITORING
                     suspectedConsecutiveWindows = 0
                     recentImpactCountdown = 0
+                    activeMotionRecoveryWindows = 0
                 }
             }
         }
